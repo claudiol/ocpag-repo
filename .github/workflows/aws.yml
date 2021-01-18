@@ -21,8 +21,11 @@ jobs:
     runs-on: [self-hosted, Linux]
     steps:
       - name: touch a test file
-        run: |
-          mkdir aws && touch aws/testfile && echo 'test' >> aws/testfile
+        run:
+          - rm -rf aws
+          - mkdir aws
+          - touch aws/testfile
+          - echo 'test' >> aws/testfile
 
   # this will extract and run tests to ensure all requisite components are present in the bundle as-is
   validate_aws_bundle:
