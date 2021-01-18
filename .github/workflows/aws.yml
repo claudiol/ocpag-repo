@@ -28,6 +28,7 @@ jobs:
   validate_aws_bundle:
     name: Validate AWS Bundle
     runs-on: [self-hosted, Linux]
+    needs: generate_aws_bundle
     steps:
       - name: validate a test file
         run: |
