@@ -44,7 +44,6 @@ jobs:
     needs: validate_aws_bundle
     runs-on: [self-hosted, Linux]
     steps:
-    - uses: actions/checkout@main
     - uses: jakejarvis/s3-sync-action@master
       with: 
         args: --acl public-read --follow-symlinks --delete
