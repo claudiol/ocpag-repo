@@ -26,6 +26,7 @@ jobs:
           mkdir aws
           touch aws/testfile
           echo 'test' >> aws/testfile
+          tree
 
   # this will extract and run tests to ensure all requisite components are present in the bundle as-is
   validate_aws_bundle:
@@ -36,6 +37,7 @@ jobs:
       - name: validate a test file
         run: |
           cat aws/testfile
+          pwd
 
   # this will upload whatever is in the local aws directory to the remote aws directory in the S3 bucket.
   upload_aws_bundle:
