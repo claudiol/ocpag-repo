@@ -26,7 +26,6 @@ jobs:
           mkdir aws
           touch aws/testfile
           echo 'test' >> aws/testfile
-          tree
 
   # this will extract and run tests to ensure all requisite components are present in the bundle as-is
   validate_aws_bundle:
