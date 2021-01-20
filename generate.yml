@@ -1,0 +1,8 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  roles:
+    - role: rhcos-image-download
+      
