@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include rhcos-image-download"
+      include_role:
+        name: "rhcos-image-download"

@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include openshift-content-mirror"
+      include_role:
+        name: "openshift-content-mirror"
