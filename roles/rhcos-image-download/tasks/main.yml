@@ -1,2 +1,12 @@
 ---
-# tasks file for rhcos-image-download
+- name: Download RHCOS Image
+  get_url:
+    url: "{{ cloud_targets[cloud_target] }}"
+    dest: "{{ dest }}"
+    mode: '0660'
+    checksum: "sha256:http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/sha256sum.txt"
+
+# - name: Debug and Validate RHCOS Image Checksum
+#   debug:
+#     msg: "{{ downloaded_image.checksum_dest }} is the checkum dest and {{ downloaded_image.checksum_src }} is the checksum source"
+

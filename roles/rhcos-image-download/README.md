@@ -1,31 +1,44 @@
-Role Name
+rhcos-image-download
 =========
 
-A brief description of the role goes here.
+Downloads the appropriate latest RHCOS immutable image for the selected cloud target platform, sourced from the official Red Hat RHCOS Image repository found here: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+
+This role can be used to source the image in use cases where the target cloud region, or infrastructure does not have an adequate publicly available image to use, or if you are building and deploying Openshift 4 privately on-premises. 
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Ansible 2.9+ (Execution)
+* Molecule (Testing)
+* Docker (Testing)
+
+Testing is currently based on CentOS 8. See `molecule/default/molecule.yml` for details.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+
+| Variable | Options | Description | Default Value |
+|--|--|--|--|
+| **cloud_target** (*string*) | *aws, gcp, openstack, azure, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. See role `vars.yml` for details. | metal |
+| **dest** |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | ./ |
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+N/A
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This example will download the appropriate Amazon AWS RHCOS image and save it to your ./local/path directory.
 
-    - hosts: servers
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: rhcos-image-download
+           dest: "./local/path"
+           cloud_target: aws
 
 License
 -------
@@ -35,4 +48,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Chris Kuperstein (ckuperst@redhat.com, chris@kuperstein.net) Red Hat
