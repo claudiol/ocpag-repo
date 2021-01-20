@@ -21,7 +21,7 @@ Role Variables
 | Variable | Options | Description | Default Value |
 |--|--|--|--|
 | **cloud_target** (*string*) | *aws, gcp, openstack, azure, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. See role `vars.yml` for details. | metal |
-| **dest** |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | ./ |
+| **dest** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | ./ |
 
 
 Dependencies
