@@ -43,7 +43,7 @@ This example will download the appropriate Amazon AWS RHCOS image and save it to
 License
 -------
 
-BSD
+GPL-3.0-or-later
 
 Author Information
 ------------------
