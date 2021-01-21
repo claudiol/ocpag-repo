@@ -1,7 +1,7 @@
-Role Name
+openshift-content-mirror
 =========
 
-A brief description of the role goes here.
+Sources all dependencies required to install Openshift 4 in a private network.
 
 Requirements
 ------------

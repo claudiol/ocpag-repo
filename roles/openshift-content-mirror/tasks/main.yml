@@ -1,2 +1,63 @@
 ---
 # tasks file for openshift-content-mirror
+
+# dont bother checksumming for now, for some reason they dont store or generate all the sums needed to automate this cleanly.
+
+# - name: Download OC Checksum File
+#   get_url:
+#     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
+#     dest: "{{ dest }}/sha256sum.txt"
+#     mode: '0440'
+#   register: checksum_file
+#
+# - name: Remove Versions from Checksum File
+#   replace:
+#     path: "{{ checksum_file.dest }}"
+#     regexp: '-(\d+)\.(\d+)\.(\d+)'
+#     replace: ''
+- name: Get Absolute Path
+  shell: |
+    cd "{{ dest }}"
+    pwd
+  register: working_dir
+
+- name: Create Mirror Directory
+  file:
+    path: "{{ working_dir.stdout }}/mirror"
+    state: directory
+
+- name: Download OC Binary
+  get_url: 
+    url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/{{ os_platforms[os_platform] }}"
+    dest: "/tmp/"
+    mode: '0660'
+    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/sha256sum.txt"
+  register: oc_binary
+
+- name: Extract OC Binary
+  unarchive:
+    src: "{{ oc_binary.dest }}"
+    dest: "{{ working_dir.stdout }}/mirror/"
+    remote_src: yes
+  register: oc_binary
+
+- name: Copy Pull Secret to Mirror
+  copy:
+    src: "{{ pull_secret_file }}"
+    dest: "{{ working_dir.stdout }}/mirror/"
+    mode: '0660'
+    remote_src: yes
+  register: pull_secret
+
+- name: Mirror Openshift 4 Content Locally
+  shell: |
+    {{ working_dir.stdout }}/mirror/oc adm release mirror --insecure=true \
+    --to-dir={{ dest }}/mirror/openshift-release-dev \
+    -a {{ pull_secret.dest }} \
+    quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
+
+- name: Extract openshift-installer from Content
+  shell: |
+    {{ working_dir.stdout }}/mirror/oc adm release extract -a {{ pull_secret.dest }} \
+    --command=openshift-install --to={{ dest }}/mirror \
+    quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
