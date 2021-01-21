@@ -44,7 +44,7 @@
 - name: Mirror Openshift 4 Content Locally
   shell: |
     {{ dest }}/oc adm release mirror --insecure=true \
-    --to-dir={{ dest }}/bundle/openshift-release-dev \
+    --to-dir={{ dest }}/openshift-release-dev \
     -a {{ pull_secret_file }} \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
   when: openshift_content.stat.exists is false
@@ -58,7 +58,7 @@
 - name: Extract openshift-install Binary From Content
   shell: |
     {{ dest }}/oc adm release extract -a {{ pull_secret_file }} \
-    --command=openshift-install --to={{ dest }}/bundle \
+    --command=openshift-install --to={{ dest }} \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
   when: openshift_install_binary.stat.exists is false
   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
