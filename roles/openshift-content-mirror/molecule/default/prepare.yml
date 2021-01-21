@@ -2,6 +2,11 @@
 - name: Prepare
   hosts: all
   tasks:
+    - name: Create Bundle Directory
+      file:
+        path: "./bundle"
+        state: directory
+
     - name: "Copy Testing Pull Secret"
       copy:
         src: "./pull-secret.txt"

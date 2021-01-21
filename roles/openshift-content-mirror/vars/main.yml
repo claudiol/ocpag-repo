@@ -4,3 +4,7 @@ os_platforms:
   linux: "openshift-client-linux-{{ ocp_version }}.tar.gz"
   macos: "openshift-client-mac-{{ ocp_version }}.tar.gz"
   windows: "openshift-client-windows-{{ ocp_version }}.zip"
+
+container_files:
+  - https://ocpagpkg.s3-us-west-1.amazonaws.com/universal/nginx.tar
+  - https://ocpagpkg.s3-us-west-1.amazonaws.com/universal/registry.tar
