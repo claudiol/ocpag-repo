@@ -70,7 +70,7 @@
 
 - name: Download NGINX and Registry Images into Package
   get_url:
-    src: "{{ item }}"
+    url: "{{ item }}"
     dest: "{{ dest }}/containers/"
     mode: '0660'
   register: containers
