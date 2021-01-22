@@ -21,7 +21,7 @@ Role Variables
 | Variable | Options | Description | Default Value |
 |--|--|--|--|
 | **pull_secret_file** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. | /tmp/pull_secret.txt |
-| **dest** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | ./ |
+| **dest** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | "bundle" |
 |**os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
 | **ocp_version** (*string*)|  | Version of Openshift to target for pulling dependencies | 4.6.8 |
 
