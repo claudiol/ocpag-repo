@@ -1,0 +1,11 @@
+---
+# vars file for cloud-dependencies
+cloud_targets:
+  aws: 
+    tool_urls:
+      linux: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+      macos: https://awscli.amazonaws.com/AWSCLIV2.pkg
+      windows: https://awscli.amazonaws.com/AWSCLIV2.msi
+    files: 
+      - aws-vmimport-policy.json
+      - aws-vmimport-role.json

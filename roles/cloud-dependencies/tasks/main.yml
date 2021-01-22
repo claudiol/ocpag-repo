@@ -1,0 +1,9 @@
+---
+# tasks file for cloud-dependencies
+- name: Build a cloud-dependencies Folder
+  file:
+    path: "{{ dest }}/cloud-dependencies"
+    state: directory
+
+- include_tasks: aws.yml
+  when: cloud_target == 'aws'
