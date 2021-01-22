@@ -1,38 +1,56 @@
-openshift-content-mirror
+rhcos-image-download
 =========
 
-Sources all dependencies required to install Openshift 4 in a private network.
+Downloads multiple dependencies required to deploy Openshift 4 in a private network. Will store the contents locally to a path.
+
+oc, kubectl, openshift-install, openshift-release-dev, nginx+docker-registry container images are pulled with appropriate matching versions.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Ansible 2.9+ (Execution)
+* Molecule (Testing)
+* Docker (Testing)
+
+Testing is currently based on CentOS 8. See `molecule/default/molecule.yml` for details.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+
+| Variable | Options | Description | Default Value |
+|--|--|--|--|
+| **pull_secret_file** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. | /tmp/pull_secret.txt |
+| **dest** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | ./ |
+|**os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
+| **ocp_version** (*string*)|  | Version of Openshift to target for pulling dependencies | 4.6.8 |
+
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+N/A
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This example will download the appropriate content and dependencies and save them to your ./local/path directory.
 
-    - hosts: servers
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: openshift-content-mirror
+           dest: "./local/path"
+           pull_Secret_file: "~/Downloads/pull_secret.txt"
+           os_platform: linux
+           ocp_version: "4.6.8"
 
 License
 -------
 
-BSD
+GPL-3.0-or-later
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Chris Kuperstein (ckuperst@redhat.com, chris@kuperstein.net) Red Hat
