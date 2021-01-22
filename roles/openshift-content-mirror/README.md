@@ -1,4 +1,4 @@
-rhcos-image-download
+openshift-content-mirror
 =========
 
 Downloads multiple dependencies required to deploy Openshift 4 in a private network. Will store the contents locally to a path.
