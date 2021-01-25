@@ -1,0 +1,4 @@
+- name: Download Azure CLI Python Virtual Environment
+  get_url:
+    url: "{{ cloud_targets.azure.tool_urls[ os_platform ] }}"
+    dest: "{{ directory }}"

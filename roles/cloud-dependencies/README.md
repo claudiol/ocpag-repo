@@ -1,38 +1,51 @@
-Role Name
+cloud-dependencies
 =========
 
-A brief description of the role goes here.
+Downloads the appropriate tooling binaries needed to automate against common cloud providers programatically.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Ansible 2.9+ (Execution)
+* Molecule (Testing)
+* Docker (Testing)
+
+Testing is currently based on CentOS 8. See `molecule/default/molecule.yml` for details.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+
+| Variable | Options | Description | Default Value |
+|--|--|--|--|
+| **cloud_target** (*string*) | *aws, gcp, azure* | Selects the appropriate target image to download from the latest releases image repository. See role `vars.yml` for details. | metal |
+| **dest** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. | "bundle" |
+|**os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+N/A
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+This example will download the appropriate Amazon AWS RHCOS image and save it to your ./local/path directory.
 
-    - hosts: servers
+    - hosts: localhost
       roles:
-         - { role: username.rolename, x: 42 }
+         - role: cloud-dependencies
+           dest: "./local/path"
+           cloud_target: aws
+           os_platform: linux
 
 License
 -------
 
-BSD
+GPL-3.0-or-later
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Chris Kuperstein (ckuperst@redhat.com, chris@kuperstein.net) Red Hat

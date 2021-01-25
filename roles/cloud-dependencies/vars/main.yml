@@ -9,3 +9,15 @@ cloud_targets:
     files: 
       - aws-vmimport-policy.json
       - aws-vmimport-role.json
+  azure:
+    tool_urls:
+      linux: https://ocpagpkg.s3-us-west-1.amazonaws.com/universal/azure-cli.tar.gz
+      macos: https://ocpagpkg.s3-us-west-1.amazonaws.com/universal/azure-cli.tar.gz
+      windows: https://ocpagpkg.s3-us-west-1.amazonaws.com/universal/azure-cli.tar.gz
+  gcp:
+    tool_urls:
+      linux: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-324.0.0-linux-x86_64.tar.gz
+      macos: https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-324.0.0-darwin-x86_64.tar.gz
+      windows: https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe
+
+directory: "{{ dest }}/cloud-dependencies"

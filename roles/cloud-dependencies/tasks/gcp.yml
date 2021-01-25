@@ -1,0 +1,5 @@
+- name: Download GCP Cloud SDK Binary
+  get_url:
+    url: "{{ cloud_targets.gcp.tool_urls[ os_platform ] }}"
+    dest: "{{ directory }}"
+    

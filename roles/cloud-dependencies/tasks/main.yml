@@ -7,3 +7,9 @@
 
 - include_tasks: aws.yml
   when: cloud_target == 'aws'
+
+- include_tasks: azure.yml
+  when: cloud_target == 'azure'
+
+- include_tasks: gcp.yml
+  when: cloud_target == 'gcp'
