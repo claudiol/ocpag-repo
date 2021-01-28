@@ -1,0 +1,14 @@
+---
+- name: Download AWS CLI Binary
+  get_url: 
+    url: "{{ cloud_targets.aws.tool_urls[ os_platform ] }}"
+    dest: "{{ directory }}"
+    mode: '0440'
+  register: awscli_binary
+
+- name: Copy in AWS IAM Templates
+  copy:
+    src: "{{ item }}"
+    dest: "{{ directory }}"
+  loop: "{{ cloud_targets.aws.files }}"
+

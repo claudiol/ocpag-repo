@@ -1,0 +1,89 @@
+---
+# tasks file for openshift-content-mirror
+
+# dont bother checksumming for now, for some reason they dont store or generate all the sums needed to automate this cleanly.
+
+# - name: Download OC Checksum File
+#   get_url:
+#     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
+#     dest: "{{ dest }}/sha256sum.txt"
+#     mode: '0440'
+#   register: checksum_file
+#
+# - name: Remove Versions from Checksum File
+#   replace:
+#     path: "{{ checksum_file.dest }}"
+#     regexp: '-(\d+)\.(\d+)\.(\d+)'
+#     replace: ''
+
+# - name: Set Working Directory
+#   shell: |
+#     pwd
+#   register: working_dir
+#   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
+
+- name: Download OC Binary
+  get_url: 
+    url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/{{ os_platforms[os_platform] }}"
+    dest: "/tmp/"
+    mode: '0660'
+    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/sha256sum.txt"
+  register: oc_binary_tarball
+
+- name: Extract OC Binary
+  unarchive:
+    src: "{{ oc_binary_tarball.dest }}"
+    #dest: "{{ working_dir.stdout }}/{{ dest }}"
+    dest: "/tmp/"
+    remote_src: yes
+  register: oc_binary
+
+- name: Copy Contents of OC Binary to Bundle
+  copy:
+    src: "/tmp/{{ item }}"
+    dest: "{{ dest }}"
+    mode: '0550'
+    remote_src: yes
+  loop:
+    - kubectl
+    - oc
+
+- name: Check if Openshift Content already exists
+  stat:
+    path: "{{ dest }}/openshift-release-dev"
+  register: openshift_content
+
+- name: Mirror Openshift 4 Content Locally
+  shell: |
+    {{ dest }}/oc adm release mirror --insecure=true \
+    --to-dir={{ dest }}/openshift-release-dev \
+    -a {{ pull_secret_file }} \
+    quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
+  when: openshift_content.stat.exists is false
+  changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
+
+- name: Check if Openshift Install Binary already exists
+  stat:
+    path: "{{ dest }}/openshift-install"
+  register: openshift_install_binary
+
+- name: Extract openshift-install Binary From Content
+  shell: |
+    {{ dest }}/oc adm release extract -a {{ pull_secret_file }} \
+    --command=openshift-install --to={{ dest }} \
+    quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
+  when: openshift_install_binary.stat.exists is false
+  changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
+
+- name: Make Container Image Subdirectory
+  file:
+    path: "{{ dest }}/containers"
+    state: directory
+
+- name: Download NGINX and Registry Images into Package
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ dest }}/containers/"
+    mode: '0660'
+  register: containers
+  loop: "{{ container_files }}"

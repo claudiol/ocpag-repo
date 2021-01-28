@@ -1,0 +1,5 @@
+---
+# defaults file for cloud-dependencies
+os_platform: linux
+dest: "bundle"
+cloud_target: "aws"

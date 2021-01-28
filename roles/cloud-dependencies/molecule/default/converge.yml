@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include cloud-dependencies"
+      include_role:
+        name: "cloud-dependencies"

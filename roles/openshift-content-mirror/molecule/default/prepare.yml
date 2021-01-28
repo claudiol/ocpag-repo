@@ -1,0 +1,15 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create Bundle Directory
+      file:
+        path: "./bundle"
+        state: directory
+
+    - name: "Copy Testing Pull Secret"
+      copy:
+        src: "./pull-secret.txt"
+        dest: "/tmp/pull_secret.txt"
+        mode: '0660'
+        remote_src: no

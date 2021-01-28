@@ -1,0 +1,21 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  roles:
+    - role: rhcos-image-download
+      vars:
+        dest: "{{ lookup('env', 'DEST') }}"
+        cloud_target: "{{ lookup('env', 'CLOUD_TARGET') }}"
+    - role: openshift-content-mirror
+      vars:
+        dest: "{{ lookup('env', 'DEST') }}"
+        pull_secret_file: "{{ lookup('env', 'PULL_SECRET_PATH') }}"
+        os_platform: "{{ lookup('env', 'OS_PLATFORM') }}"
+        ocp_version: "{{ lookup('env', 'OCP_VERSION') }}"
+    - role: cloud-dependencies
+      vars:
+        cloud_target: "{{ lookup('env', 'CLOUD_TARGET') }}"
+        dest: "{{ lookup('env', 'DEST') }}"
+        os_platform: "{{ lookup('env', 'OS_PLATFORM') }}"

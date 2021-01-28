@@ -1,0 +1,4 @@
+---
+# defaults file for rhcos-image-download
+cloud_target: metal
+dest: "bundle"

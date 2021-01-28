@@ -1,0 +1,8 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Create Bundle Directory
+      file:
+        path: "./bundle"
+        state: directory

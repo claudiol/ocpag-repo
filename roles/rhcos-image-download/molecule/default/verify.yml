@@ -1,0 +1,18 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+  - name: Gather statistics of downloaded image
+    ansible.builtin.stat:
+      path: "/rhcos-metal.x86_64.raw.gz"
+    register: downloaded_image
+
+  - name: RHCOS Image was Downloaded
+    assert:
+      that:
+        - "{{ downloaded_image.stat.size }} >= 100"
+        - "{{ downloaded_image.stat.exists }} == true"
+      fail_msg: "'downloaded_image.stat.size' is not the expected size (>100 Bytes) or 'downloaded_image.stat.exists' did not eval to true"
+      success_msg: "'downloaded_image' is of expected size (>100 Bytes) and exists"
