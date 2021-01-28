@@ -15,11 +15,12 @@
 #     path: "{{ checksum_file.dest }}"
 #     regexp: '-(\d+)\.(\d+)\.(\d+)'
 #     replace: ''
-- name: Set Working Directory
-  shell: |
-    pwd
-  register: working_dir
-  changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
+
+# - name: Set Working Directory
+#   shell: |
+#     pwd
+#   register: working_dir
+#   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Download OC Binary
   get_url: 
@@ -32,9 +33,20 @@
 - name: Extract OC Binary
   unarchive:
     src: "{{ oc_binary_tarball.dest }}"
-    dest: "{{ working_dir.stdout }}/{{ dest }}"
+    #dest: "{{ working_dir.stdout }}/{{ dest }}"
+    dest: "/tmp/"
     remote_src: yes
   register: oc_binary
+
+- name: Copy Contents of OC Binary to Bundle
+  copy:
+    src: "/tmp/{{ item }}"
+    dest: "{{ dest }}"
+    mode: '0550'
+    remote_src: yes
+  loop:
+    - kubectl
+    - oc
 
 - name: Check if Openshift Content already exists
   stat:

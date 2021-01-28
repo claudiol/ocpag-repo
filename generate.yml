@@ -3,6 +3,26 @@
   hosts: localhost
   connection: local
 
+  vars:
+    OS_PLATFORM: "{{ lookup('env', 'OS_PLATFORM') }}"
+    CLOUD_TARGET: "{{ lookup('env, 'CLOUD_TARGET') }}"
+    OCP_VERSION: "{{ lookoup('env', 'OCP_VERSION') }}"
+    DEST: "{{ lookup('env', 'DEST') }}"
+    PULL_SECRET_PATH: "{{ lookup('env', 'PULL_SECRET_PATH') }}"
+
   roles:
     - role: rhcos-image-download
-      
+      vars:
+        dest: "{{ DEST }}"
+        cloud_target: "{{ CLOUD_TARGET }}"
+    - role: openshift-content-mirror
+      vars:
+        dest: "{{ DEST }}"
+        pull_secret_file: "{{ PULL_SECRET_PATH }}"
+        os_platform: "{{ OS_PLATFORM }}"
+        ocp_version: "{{ OCP_VERSION }}"
+    - role: cloud-dependencies
+      vars:
+        cloud_target: "{{ CLOUD_TARGET }}"
+        dest: "{{ DEST }}"
+        os_platform: "{{ OS_PLATFORM }}"
