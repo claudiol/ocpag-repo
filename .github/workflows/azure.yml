@@ -1,9 +1,9 @@
-name: AWS Bundle
+name: Azure Bundle
 on:
 # this will run on each merge to main/master
   push:
     branches:
-    - aws
+    - azure
     - main
 # this will run daily at midnight
   schedule:
@@ -16,8 +16,8 @@ on:
 jobs:
   
   # this is where the heavy lifting occurs
-  generate_aws_bundle:
-    name: Generate AWS Bundle
+  generate_azure_bundle:
+    name: Generate Azure Bundle
     runs-on: [self-hosted, Linux]
     env:
       PULL_SECRET: ${{ secrets.PULL_SECRET }}
@@ -31,8 +31,8 @@ jobs:
 
       - name: Clean and Prepare
         run: |
-          rm -rf {aws-content,aws}
-          mkdir -p {aws-content,aws}
+          rm -rf {azure-content,azure}
+          mkdir -p {azure-content,azure}
           rm -f /tmp/pull_secret.txt
           echo $PULL_SECRET > /tmp/pull_secret.txt
 
@@ -42,8 +42,8 @@ jobs:
           ocp_version: $OCP_VERSION
           pull_secret_path: /tmp/pull_secret.txt
           os_platform: linux
-          destination: aws-content
-          cloud_selection: aws
+          destination: azure-content
+          cloud_selection: azure
           EOF
 
       - name: Generate Bundle Content
@@ -52,25 +52,25 @@ jobs:
 
       - name: Compress and Package Content
         run: |
-          tar -czvf aws/openshift4-aws-linux-$OCP_VERSION-x86_64.tar.gz aws-content/*
+          tar -czvf azure/openshift4-azure-linux-$OCP_VERSION-x86_64.tar.gz azure-content/*
 
 
   # checksum the file and prepare for upload
-  validate_aws_bundle:
-    name: Validate AWS Bundle
+  validate_azure_bundle:
+    name: Validate Azure Bundle
     runs-on: [self-hosted, Linux]
-    needs: generate_aws_bundle
+    needs: generate_azure_bundle
     steps:
 
       - name: Checksum File
         run: |
-          rm -f aws/sha256sum.txt
-          (sha256sum aws/* | sed 's, .*/, ,') > aws/sha256sum.txt
+          rm -f azure/sha256sum.txt
+          (sha256sum azure/* | sed 's, .*/, ,') > azure/sha256sum.txt
 
-  # this will upload whatever is in the local aws directory to the remote aws directory in the S3 bucket.
-  upload_aws_bundle:
-    name: Upload AWS Bundle
-    needs: validate_aws_bundle
+  # this will upload whatever is in the local azure directory to the remote azure directory in the S3 bucket.
+  upload_azure_bundle:
+    name: Upload Azure Bundle
+    needs: validate_azure_bundle
     runs-on: [self-hosted, Linux]
     steps:
     - uses: jakejarvis/s3-sync-action@master
@@ -81,5 +81,5 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: 'us-west-2'   # optional: defaults to us-east-1
-        SOURCE_DIR: 'aws/'      # optional: defaults to entire repository
-        DEST_DIR: 'aws'
+        SOURCE_DIR: 'azure/'      # optional: defaults to entire repository
+        DEST_DIR: 'azure'
