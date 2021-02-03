@@ -4,10 +4,8 @@ on:
   push:
     branches:
     - azure
-    - main
-# this will run daily at midnight
-  schedule:
-  - cron: "0 0 * * *"
+    tags:
+    - '*'
 
 # this will run when latest code is published in this repo
   # release:
@@ -65,7 +63,8 @@ jobs:
       - name: Checksum File
         run: |
           rm -f azure/sha256sum.txt
-          (sha256sum azure/* | sed 's, .*/, ,') > azure/sha256sum.txt
+          (sha256sum azure/* | sed 's, .*/, ,') > azure-content/sha256sum.txt
+          mv azure-content/sha256sum.txt azure/
 
   # this will upload whatever is in the local azure directory to the remote azure directory in the S3 bucket.
   upload_azure_bundle:
