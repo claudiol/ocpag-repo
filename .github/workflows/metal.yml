@@ -4,10 +4,8 @@ on:
   push:
     branches:
     - metal
-    - main
-# this will run daily at midnight
-  schedule:
-  - cron: "0 0 * * *"
+    tags:
+    - '*'
 
 # this will run when latest code is published in this repo
   # release:
@@ -65,7 +63,8 @@ jobs:
       - name: Checksum File
         run: |
           rm -f metal/sha256sum.txt
-          (sha256sum metal/* | sed 's, .*/, ,') > metal/sha256sum.txt
+          (sha256sum metal/* | sed 's, .*/, ,') > metal-content/sha256sum.txt
+          mv metal-content/sha256sum.txt metal/
 
   # this will upload whatever is in the local metal directory to the remote metal directory in the S3 bucket.
   upload_metal_bundle:
