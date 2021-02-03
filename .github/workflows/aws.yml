@@ -5,9 +5,6 @@ on:
     branches:
     - aws
     - main
-# this will run daily at midnight
-  schedule:
-  - cron: "0 0 * * *"
 
 # this will run when latest code is published in this repo
   # release:
@@ -65,7 +62,8 @@ jobs:
       - name: Checksum File
         run: |
           rm -f aws/sha256sum.txt
-          (sha256sum aws/* | sed 's, .*/, ,') > aws/sha256sum.txt
+          (sha256sum aws/* | sed 's, .*/, ,') > aws-content/sha256sum.txt
+          mv aws-content/sha256sum.txt aws/
 
   # this will upload whatever is in the local aws directory to the remote aws directory in the S3 bucket.
   upload_aws_bundle:
