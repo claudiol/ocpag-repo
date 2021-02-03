@@ -4,10 +4,8 @@ on:
   push:
     branches:
     - vmware
-    - main
-# this will run daily at midnight
-  schedule:
-  - cron: "0 0 * * *"
+    tags:
+    - '*'
 
 # this will run when latest code is published in this repo
   # release:
@@ -65,7 +63,8 @@ jobs:
       - name: Checksum File
         run: |
           rm -f vmware/sha256sum.txt
-          (sha256sum vmware/* | sed 's, .*/, ,') > vmware/sha256sum.txt
+          (sha256sum vmware/* | sed 's, .*/, ,') > vmware-content/sha256sum.txt
+          mv vmware-content/sha256sum.txt vmware/
 
   # this will upload whatever is in the local vmware directory to the remote vmware directory in the S3 bucket.
   upload_vmware_bundle:
