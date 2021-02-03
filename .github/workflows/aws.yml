@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - aws
-    - main
-
+    tags:
+    - '*'
 # this will run when latest code is published in this repo
   # release:
   #   types: [published]
