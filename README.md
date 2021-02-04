@@ -14,12 +14,12 @@ Please check releases for latest download links.
 
 | Status | Download Link | Checksum |
 |--|--|--|
-| ![AWS Bundle](https://github.com/mikthoma/ocpag-repo/workflows/AWS%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-aws-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/sha256sum.txt) |
-| ![Azure Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Azure%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-azure-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/azure/sha256sum.txt) |
-| ![VMWare Bundle](https://github.com/mikthoma/ocpag-repo/workflows/VMWare%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/openshift4-vmware-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/sha256sum.txt) |
-| ![GCP Bundle](https://github.com/mikthoma/ocpag-repo/workflows/GCP%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/openshift4-gcp-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/sha256sum.txt) |
-| ![Openstack Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Openstack%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/openshift4-openstack-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/sha256sum.txt) |
-| ![Metal Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Metal%20Bundle/badge.svg) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/openshift4-metal-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/sha256sum.txt) |
+| ![AWS Bundle](https://github.com/mikthoma/ocpag-repo/workflows/AWS%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-aws-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/sha256sum.txt) |
+| ![Azure Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Azure%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-azure-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/azure/sha256sum.txt) |
+| ![VMWare Bundle](https://github.com/mikthoma/ocpag-repo/workflows/VMWare%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/openshift4-vmware-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/sha256sum.txt) |
+| ![GCP Bundle](https://github.com/mikthoma/ocpag-repo/workflows/GCP%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/openshift4-gcp-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/sha256sum.txt) |
+| ![Openstack Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Openstack%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/openshift4-openstack-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/sha256sum.txt) |
+| ![Metal Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Metal%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/openshift4-metal-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/sha256sum.txt) |
 
 <br />
 
