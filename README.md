@@ -20,6 +20,7 @@ Please check releases for latest download links.
 | ![GCP Bundle](https://github.com/mikthoma/ocpag-repo/workflows/GCP%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/openshift4-gcp-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/sha256sum.txt) |
 | ![Openstack Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Openstack%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/openshift4-openstack-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/sha256sum.txt) |
 | ![Metal Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Metal%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/openshift4-metal-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/sha256sum.txt) |
+| ![Red Hat Virtualization Bundle](https://github.com/mikthoma/ocpag-repo/workflows/RHV%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/rhv/openshift4-rhv-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/rhv/sha256sum.txt) |
 
 <br />
 
@@ -41,6 +42,8 @@ Playbook Variables
 Use Guide
 --------------
 
+While it is preferred to just download one of the pre-fabricated bundles we have provided above in the release download links, if you need to generate a bundle with your own custom code, or for a different version of Openshift, please feel free to follow these instructions:
+
 <br />
 
 **Recommended**: Write desired values to a variables YAML file, then input through `--extra-vars`. This can be automated.
@@ -54,12 +57,12 @@ ocp_version: "4.6.8"
 pull_secret_path: /home/user1/pull_secret.txt
 EOF
 
-ansible-playbook generate.yml --extra-args "@my_variables.yml"
+ansible-playbook generate.yml --extra-vars "@my_variables.yml"
 ```
 
 <br />
 
-**Alternative**: Run the playbook as needed, and provide the inputs to the prompts. This is preferred for direct or manual use.
+**Alternative**: Run the playbook as needed, and provide the inputs to the prompts. This is preferred for direct or manual use as a field tool with no preparation.
 
 ```
 ➜  ansible-playbook generate.yml
@@ -75,3 +78,56 @@ Desired Openshift Version [4.6.8]:
 
 PLAY [Generate Openshift Bundle] ***********************************
 ```
+
+<br />
+
+Bundle Contents
+--------------
+
+The contents of the openshift bundles consists of the following:
+
+* Appropriate RHCOS Disk Image per cloud target selection (VMDK for AWS, OVA for VMWare, QEMU for RHV, etc.)
+* Openshift 4 Container Images (Mirror from Red Hat)
+* Docker-Registry Container Image archive (.tar) for standing up a temporary external hosted service for bootstrapping the container images into RHCOS nodes
+* NGINX Container Image archive (.tar) for privately serving .ign Ignition files which are transpiled from the installer
+* Optional Tertiary cloud dependencies such as .json templates for AWS S3->EBS->AMI import and snapshot conversion to aid with uploading RHCOS disk images as a compute instance template. These are determined by each cloud provider and their specific needs for enabling image upload/import.
+    - see [this link for AWS](https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html) for an example of why these templates are included.
+* An appropriate CLI binary per cloud target selection (awscli for AWS, azure-cli python venv for Azure, gcloud-sdk for GCloud/GCP, etc.) Most cloud targets which have native ansible modules available as an interface, are excluded as an opinion. 
+    - Azure-CLI is included as a python virtual environment. At time of writing, they did not have a method for sourcing a portable executable such as a static ELF binary. A python virtual environment was compiled and provided by our project maintainers for convenience.
+* `oc` binary which is also used to perform the mirroring operation of Openshift content
+* `openshift-install` binary which is extracted from the mirrored blobs produced by `oc` using an adequate Red Hat Cluster Manager pull secret
+* `kubectl` binary which is co-sourced within the appropriate `oc` binary tarball for toolchain and client access use cases
+
+
+<br />
+
+A typical bundle generated with this toolset will appear like so:
+
+```
+➜  bundle tree -L 2
+.
+├── cloud-dependencies
+│   ├── awscli-exe-linux-x86_64.zip
+│   ├── aws-vmimport-policy.json
+│   └── aws-vmimport-role.json
+├── containers
+│   ├── nginx.tar
+│   └── registry.tar
+├── kubectl
+├── oc
+├── openshift-install
+├── openshift-release-dev
+│   ├── config
+│   └── v2
+└── rhcos-aws.x86_64.vmdk.gz
+```
+<br />
+
+This project/tool does not assume a specific structure, if you so desire, you can leverage the individual Ansible roles in your own projects and create your own generation playbook(s). Please see each role's README.md for role-specific documentation.
+
+Ansible Roles Included
+--------------
+
+* `cloud-dependencies` is the Ansible role that provides the cloud-dependencies folder, with the cloud CLI binaries and tertiary template materials as needed.
+* `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc` per the product documentation.
+* `rhcos-image-download` is the Ansible role that provide the appropriate RHCOS image depending on the cloud target selected. This is used to simplify/translate a simple input parameter such as `rhv, metal, aws, azure, ...` into its appropriate download link, as well as checksum validate the image file.
