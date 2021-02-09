@@ -7,3 +7,4 @@ cloud_targets:
   openstack: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-openstack.x86_64.qcow2.gz
   vmware: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-vmware.x86_64.ova
   metal: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-metal.x86_64.raw.gz
+  rhv: http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/rhcos-qemu.x86_64.qcow2.gz

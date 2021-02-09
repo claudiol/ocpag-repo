@@ -10,7 +10,7 @@
       private: no
 
     - name: cloud_selection
-      prompt: Cloud to generate content for (aws,gcp,azure,metal,vmware,openstack)
+      prompt: Cloud to generate content for (aws,gcp,azure,metal,rhv,vmware,openstack)
       default: "aws"
       private: no
 
