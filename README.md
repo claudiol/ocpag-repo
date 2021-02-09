@@ -5,6 +5,10 @@ Generates an Openshift dependency bundle for desired cloud, execution platform, 
 
 This tool does not create the tarball for you, but pre-baked packages are available below if you do not wish to execute your own.
 
+This tool will not assume simultaneous contiguous access to a destination image repository. This tool is used to produce local disk content only.
+
+This tool will not create or fill an image registry for you.
+
 Pre-Generated Bundles
 --------------
 
@@ -86,16 +90,23 @@ Bundle Contents
 
 The contents of the openshift bundles consists of the following:
 
-* Appropriate RHCOS Disk Image per cloud target selection (VMDK for AWS, OVA for VMWare, QEMU for RHV, etc.)
-* Openshift 4 Container Images (Mirror from Red Hat)
-* Docker-Registry Container Image archive (.tar) for standing up a temporary external hosted service for bootstrapping the container images into RHCOS nodes
-* NGINX Container Image archive (.tar) for privately serving .ign Ignition files which are transpiled from the installer
-* Optional Tertiary cloud dependencies such as .json templates for AWS S3->EBS->AMI import and snapshot conversion to aid with uploading RHCOS disk images as a compute instance template. These are determined by each cloud provider and their specific needs for enabling image upload/import.
-    - see [this link for AWS](https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html) for an example of why these templates are included.
+* Red Hat CoreOS Image | RHCOS is the only supported operating system for OpenShift Container Platform control plane, or master, machines. RHCOS is the default operating system for all cluster machines.
+    - [RHCOS Image Release Repository](http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest)
+* OpenShift Container Images
+    - [Official OpenShift Released Images on Quay](https://quay.io/repository/openshift-release-dev/ocp-release?tab=tags)
+    - NOTE: You will need to use the oc command to mirror the image contents
+* Archived Container Images (.tar)
+    - `registry.tar` | Docker-Registry for standing up a temporary external hosted service for bootstrapping the container images into RHCOS nodes
+    - `nginx.tar` | Webserver for privately serving .ign Ignition files which are transpiled from the installer
+* Optional Tertiary cloud dependencies. These are determined by each cloud provider and their specific needs for enabling image upload/import.
+    - see [this link for AWS](https://docs.aws.amazon.com/vm-import/latest/userguide/vmimport-image-import.html) for an example of why these templates are included. (`vmimport-role.json` and `vmimport-policy.json`)
 * An appropriate CLI binary per cloud target selection (awscli for AWS, azure-cli python venv for Azure, gcloud-sdk for GCloud/GCP, etc.) Most cloud targets which have native ansible modules available as an interface, are excluded as an opinion. 
     - Azure-CLI is included as a python virtual environment. At time of writing, they did not have a method for sourcing a portable executable such as a static ELF binary. A python virtual environment was compiled and provided by our project maintainers for convenience.
 * `oc` binary which is also used to perform the mirroring operation of Openshift content
-* `openshift-install` binary which is extracted from the mirrored blobs produced by `oc` using an adequate Red Hat Cluster Manager pull secret
+    - [Official Openshift Client Binaries Repository](http://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/)
+    - NOTE: While you can download the `openshift-install` binary from here, historically it has been found that the repo-provided executable and the "proper" executable which is supposed to be extracted from the Quay images are different. Whenever possible, please source your installer executable from the images using `oc`.
+* `openshift-install` binary which is extracted from the mirrored blobs produced by `oc` using an adequate Red Hat Cluster Manager pull secret.
+    - NOTE: There is a direct relationship between this executable and the OCP release images.  If you use the wrong openshift-install executable it will lead to an unsuccessful deployment of OpenShift.
 * `kubectl` binary which is co-sourced within the appropriate `oc` binary tarball for toolchain and client access use cases
 
 
