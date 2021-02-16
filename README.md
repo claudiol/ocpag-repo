@@ -1,7 +1,7 @@
 Openshift 4 Offline Bundle Generation Tool
 =========
 
-Generates an Openshift dependency bundle for desired cloud, execution platform, and version. This is used to aggregate dependencies from all of the various Red Hat official resources. You choose how to compress/package the directory contents.
+Generates an Openshift dependency bundle for desired cloud, execution platform, and latest version. This is used to aggregate dependencies from all of the various Red Hat official resources. You choose how to compress/package the directory contents.
 
 This tool does not create the tarball for you, but pre-baked packages are available below if you do not wish to execute your own.
 
