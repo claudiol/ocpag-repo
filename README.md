@@ -35,7 +35,7 @@ Playbook Variables
 
 | Variable | Options | Description | Default Value |
 |--|--|--|--|
-| **cloud_selection** (*string*) | *aws, gcp, openstack, azure, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. | aws |
+| **cloud_selection** (*string*) | *aws, gcp, openstack, azure, rhv, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. | aws |
 | **destination** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. |  |
 | **os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
 | **ocp_version** (*string*)|  | Version of Openshift to target for pulling dependencies | 4.6.8 |
