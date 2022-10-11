@@ -1,0 +1,18 @@
+apiVersion: mirror.openshift.io/v1alpha2
+kind: ImageSetConfiguration
+apiVersion: mirror.openshift.io/v1alpha2
+kind: ImageSetConfiguration
+{% if ocp_channels %}
+mirror:
+  platform:
+    channels:
+{% for channel in ocp_channels %}
+      - name: {{ channel.name }}
+{% if 'minVersion' in channel %}
+        minVersion: {{ channel.minVersion }}
+{% endif %}
+{% if 'maxVersion' in channel %}
+        maxVersion: {{ channel.maxVersion }}
+{% endif %}
+{% endfor %}
+{% endif %}
