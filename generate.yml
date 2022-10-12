@@ -18,16 +18,61 @@
       prompt: "Path to your Pull Secret file (example: /home/user1/pull_secret.txt)"
       private: no
 
-    - name: os_platform
+    - name: desired_os_platform
       prompt: Desired Operating System Platform for execution (linux,macos,windows)
       default: "linux"
       private: no
 
-    - name: ocp_version
+    - name: desired_ocp_version
       prompt: Desired Openshift Version
       default: "4.6.8"
       private: no
 
+    - name: desired_archive_size
+      prompt: Maximum size (GiB) of each archive
+      default: "4"
+      private: no
+
+  pre_tasks:
+    - name: Checking ocp_version
+      vars:
+        temp: "{{ desired_ocp_version }}"
+      debug:
+        var: temp
+      register: version_check
+      when: (desired_ocp_version.split('.') | length) > 2
+
+    - ansible.builtin.fail: 
+        msg: "The desired ocp version [{{ desired_ocp_version }}] is not valid. e.g. 4.10.1"
+      when: 
+        - version_check.skip_reason == "Conditional result was False"
+
+    - name: "Retireving available OpenShift 4 versions"
+      shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+      register: v4_versions
+
+    - name: "Retireving available Stable OpenShift 4 versions"
+      shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"stable-4" | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+      register: stable_v4_versions
+
+    - name: OpenShift 4 versions
+      debug:
+        msg: "Version {{ desired_ocp_version }} is valid"
+      register: v4_result
+      when: 'desired_ocp_version|string in v4_versions.stdout'
+
+    - name: Stable OpenShift 4 versions
+      debug:
+        msg: "Version {{ desired_ocp_version }} is valid"
+      register: stable_result
+      when: 'desired_ocp_version|string in stable_v4_versions.stdout'
+
+    - ansible.builtin.fail: 
+        msg: "The desired ocp version [{{ desired_ocp_version }}] does not exits"
+      when: 
+        - v4_result.skip_reason == "Conditional result was False"
+        - stable_result.skip_reason == "Conditional result was False"
+        
   roles:
     - role: rhcos-image-download
       vars:
@@ -37,10 +82,11 @@
       vars:
         dest: "{{ destination }}"
         pull_secret_file: "{{ pull_secret_path }}"
-        os_platform: "{{ os_platform }}"
-        ocp_version: "{{ ocp_version }}"
+        os_platform: "{{ desired_os_platform }}"
+        ocp_version: "{{ desired_ocp_version }}"
+        archive_size: "{{ desired_archive_size }}"
     - role: cloud-dependencies
       vars:
         cloud_target: "{{ cloud_selection }}"
         dest: "{{ destination }}"
-        os_platform: "{{ os_platform }}"
+        os_platform: "{{ desired_os_platform }}"

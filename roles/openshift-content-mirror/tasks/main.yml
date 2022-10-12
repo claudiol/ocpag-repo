@@ -22,7 +22,7 @@
 #   register: working_dir
 #   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
-- name: Download OC Binary
+- name: "Download OC Binary {{ ocp_version }}"
   get_url: 
     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/{{ os_platforms[os_platform] }}"
     dest: "/tmp/"

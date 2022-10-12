@@ -4,6 +4,7 @@ apiVersion: mirror.openshift.io/v1alpha2
 kind: ImageSetConfiguration
 {% if ocp_channels %}
 mirror:
+archiveSize: {{ archive_size }}
   platform:
     channels:
 {% for channel in ocp_channels %}
