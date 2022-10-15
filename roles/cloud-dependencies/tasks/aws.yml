@@ -3,7 +3,7 @@
   get_url: 
     url: "{{ cloud_targets.aws.tool_urls[ os_platform ] }}"
     dest: "{{ directory }}"
-    mode: '0440'
+    mode: '0640'
   register: awscli_binary
 
 - name: Copy in AWS IAM Templates

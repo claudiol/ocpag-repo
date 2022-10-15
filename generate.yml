@@ -34,45 +34,11 @@
       private: no
 
   pre_tasks:
-    - name: Checking ocp_version
-      vars:
-        temp: "{{ desired_ocp_version }}"
-      debug:
-        var: temp
-      register: version_check
-      when: (desired_ocp_version.split('.') | length) > 2
+  - name: generate | include facts-setup
+    ansible.builtin.import_tasks: 'facts-setup.yml'
+  - name: generate | include pretasks
+    ansible.builtin.import_tasks: 'pretasks.yml'
 
-    - ansible.builtin.fail: 
-        msg: "The desired ocp version [{{ desired_ocp_version }}] is not valid. e.g. 4.10.1"
-      when: 
-        - version_check.skip_reason == "Conditional result was False"
-
-    - name: "Retireving available OpenShift 4 versions"
-      shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
-      register: v4_versions
-
-    - name: "Retireving available Stable OpenShift 4 versions"
-      shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"stable-4" | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
-      register: stable_v4_versions
-
-    - name: OpenShift 4 versions
-      debug:
-        msg: "Version {{ desired_ocp_version }} is valid"
-      register: v4_result
-      when: 'desired_ocp_version|string in v4_versions.stdout'
-
-    - name: Stable OpenShift 4 versions
-      debug:
-        msg: "Version {{ desired_ocp_version }} is valid"
-      register: stable_result
-      when: 'desired_ocp_version|string in stable_v4_versions.stdout'
-
-    - ansible.builtin.fail: 
-        msg: "The desired ocp version [{{ desired_ocp_version }}] does not exits"
-      when: 
-        - v4_result.skip_reason == "Conditional result was False"
-        - stable_result.skip_reason == "Conditional result was False"
-        
   roles:
     - role: rhcos-image-download
       vars:
