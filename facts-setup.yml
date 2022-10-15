@@ -1,0 +1,24 @@
+- name: pretasks | Retrieving available OpenShift 4 versions
+  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+  register: v4_versions
+
+- name: pretasks | Retireving available Stable OpenShift 4 versions
+  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"stable-4" | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+  register: stable_v4_versions
+
+- ansible.builtin.set_fact:
+    destination_parts: "{{ destination.split('/') }}"
+  when: "(destination.split('/') | length) > 2"
+
+- ansible.builtin.set_fact:
+    destination_parts: "/"
+  when: "(destination.split('/') | length) <= 2"
+
+- ansible.builtin.set_fact:
+    mount: "{{ item.1.mount }}"
+    mount_size_available: "{{ item.1.size_available / 1024 / 1024 }}"
+    disk_usage_s: "{{ (item.1.size_available|float / 1000000000) | round(1, 'common') }}"
+  with_together: 
+    - "{{ destination_parts }}"
+    - "{{ ansible_mounts }}"
+  when: 'item.0 |string in item.1.mount'
