@@ -1,0 +1,9 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+
+  roles:
+    - role: create-ocp-bundles 
