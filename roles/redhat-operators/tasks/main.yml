@@ -1,2 +1,5 @@
 ---
 # tasks file for redhat-operators
+- name: Parameters passed
+  ansible.builtin.debug:
+    msg: "dest: {{ dest }} operators: {{ operators }} ocp_version: {{ ocp_version }} archive_size: {{ archive_size }}"

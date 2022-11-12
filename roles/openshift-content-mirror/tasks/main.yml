@@ -38,10 +38,16 @@
     remote_src: yes
   register: oc_binary
 
+- name: Creating bin directory
+  file:
+    path: "{{ dest }}/bin"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+
 - name: Copy Contents of OC Binary to Bundle
   copy:
     src: "/tmp/{{ item }}"
-    dest: "{{ dest }}"
+    dest: "{{ dest }}/bin"
     mode: '0550'
     remote_src: yes
   loop:
@@ -72,7 +78,7 @@
 - name: Copy Contents of OC Binary to Bundle
   copy:
     src: "/tmp/{{ item }}"
-    dest: "{{ dest }}"
+    dest: "{{ dest }}/bin"
     mode: '0550'
     remote_src: yes
   loop:
@@ -86,7 +92,7 @@
 
 - name: Creating Openshift Content Bundle
   shell: |
-    {{ dest }}/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
+    {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
       
 # - name: Mirror Openshift 4 Content Locally
 #   shell: |
@@ -99,26 +105,26 @@
 
 - name: Check if Openshift Install Binary already exists
   stat:
-    path: "{{ dest }}/oc"
+    path: "{{ dest }}/bin/oc"
   register: openshift_oc_binary
 
 - name: Extract oc CLI Binary From Content
   shell: |
-    {{ dest }}/oc adm release extract -a {{ pull_secret_file }} \
-    --command=oc --to={{ dest }} \
+    {{ dest }}/bin/oc adm release extract -a {{ pull_secret_file }} \
+    --command=oc --to={{ dest }}/bin \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
   when: openshift_oc_binary.stat.exists == false
   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Check if Openshift Install Binary already exists
   stat:
-    path: "{{ dest }}/openshift-install"
+    path: "{{ dest }}/bin/openshift-install"
   register: openshift_install_binary
 
 - name: Extract openshift-install Binary From Content
   shell: |
-    {{ dest }}/oc adm release extract -a {{ pull_secret_file }} \
-    --command=openshift-install --to={{ dest }} \
+    {{ dest }}/bin/oc adm release extract -a {{ pull_secret_file }} \
+    --command=openshift-install --to={{ dest }}/bin \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
   when: openshift_install_binary.stat.exists == false
   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
@@ -135,3 +141,12 @@
     mode: '0660'
   register: containers
   loop: "{{ container_files }}"
+
+- name: "Download mirror-registry Binary"
+  get_url: 
+    url: "https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz"
+    dest: "{{ dest }}/containers/"
+    mode: '0660'
+    checksum: "sha256:https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/sha256sum.txt"
+  register: mirror_registry_binary_tarball
+
