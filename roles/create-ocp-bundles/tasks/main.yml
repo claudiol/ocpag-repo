@@ -1,2 +1,18 @@
 ---
 # tasks file for create-ocp-bundles
+
+- name: Create Self-Extracting binary bundle
+  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-bin-distro.sh -d /home/claudiol/work/bundle"
+  register: r_bin_distro
+
+- name: binary bundle debug
+  debug:
+    var: r_bin_distro
+
+- name: Create Self-Extracting ImageSet bundle
+  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-mirror-distro.sh -d /home/claudiol/work/bundle"
+  register: r_mirror_distro
+
+- name: mirror bundle debug
+  debug:
+    var: r_mirror_distro

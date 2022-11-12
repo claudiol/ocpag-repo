@@ -1,6 +1,9 @@
 #!/bin/sh
 #
 
+BUNDLEDIR=""
+TEMPDIR="/home/claudiol/temp"
+
 # Function log
 # Arguments:
 #   $1 are for the options for echo
@@ -14,7 +17,30 @@ function log {
 	fi
 }
 
-tar -cvf ocp-binaries.tar -C bin/ .
-mv ocp-binaries.tar bin_stage/
-cp scripts/setup-ocp-bin.sh bin_stage/
-makeself --sha256 ./bin_stage  ocp-binaries-installer.run "OpenShift Binary Installer" ./setup-ocp-bin.sh
+while getopts "d:t:" opt
+do
+    case $opt in
+	(d) BUNDLEDIR=$OPTARG
+	    ;;
+	(t) TEMPDIR=$OPTARG
+	    ;;
+	(*) printf "Illegal option '-%s'\n" "$opt" && exit 1
+	    ;;
+    esac
+done
+
+if [ -z $BUNDLEDIR ]; then
+    log "Please pass in the top level dir for the bundle"
+    exit 1
+elif [ ! -d $BUNDLEDIR ]; then
+    log "The [$BUNDLEDIR] directory does not exist"
+    log "Please pass in the top level dir for the bundle"
+    exit 2
+fi
+    
+tar -cvf $TEMPDIR/ocp-binaries.tar -C $BUNDLEDIR/bin/ .
+mkdir -p $TEMPDIR/bin_stage
+mv $TEMPDIR/ocp-binaries.tar $TEMPDIR/bin_stage/
+cp build/scripts/setup-ocp-bin.sh $TEMPDIR/bin_stage/
+makeself --sha256 $TEMPDIR/bin_stage  $TEMPDIR/ocp-binaries-installer.run "OpenShift Binary Installer" ./setup-ocp-bin.sh
+rm -rf $TEMPDIR/bin_stage
