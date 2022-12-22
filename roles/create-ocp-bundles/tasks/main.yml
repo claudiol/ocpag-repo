@@ -17,3 +17,6 @@
   ansible.builtin.shell: "{{ role_path }}/build/create-ocp-containers-distro.sh -d {{ source_bundle_dir }}"
   register: r_containers_distro
 
+- name: Create Self-Extracting CloudCLI bundle
+  ansible.builtin.shell: "{{ role_path }}/build/create-cloud-distro.sh -d {{ source_bundle_dir }}"
+  register: r_cloud_distro
