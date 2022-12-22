@@ -4,6 +4,10 @@
   connection: local
 
   vars_prompt:
+    - name: source_bundle_dir
+      prompt: "Enter source bundle dir:  "
+      default: "~/work/bundle"
+      private: no
 
   roles:
     - role: create-ocp-bundles 

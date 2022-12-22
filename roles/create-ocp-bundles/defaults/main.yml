@@ -1,2 +1,3 @@
 ---
 # defaults file for create-ocp-bundles
+source_bundle_dir: ~/work/bundle
