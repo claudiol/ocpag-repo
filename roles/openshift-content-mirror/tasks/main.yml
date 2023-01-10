@@ -90,7 +90,7 @@
     src: image-config.j2
     dest: /tmp/image-config.yaml
 
-- name: Creating Openshift Content Bundle
+- name: "Mirroring Openshift Images for OCP Version [ {{ ocp_version }} ]"
   shell: |
     {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
       
@@ -150,3 +150,19 @@
     checksum: "sha256:https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/sha256sum.txt"
   register: mirror_registry_binary_tarball
 
+- name: "Creating bundle manifest file"
+  template:
+    src: bundle-manifest.j2
+    dest: /tmp/bundle-manifest.yaml
+  
+- name: Copy manifest file
+  ansible.builtin.copy:
+    src: /tmp/bundle-manifest.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
+
+- name: Copy oc-mirror config file
+  ansible.builtin.copy:
+    src: /tmp/mirror-config.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
