@@ -17,7 +17,7 @@ function log {
 	fi
 }
 
-while getopts "d:t:" opt
+while getopts "d:t:r:" opt
 do
     case $opt in
 	(d) BUNDLEDIR=$OPTARG
