@@ -79,6 +79,7 @@ log  "Extracting OCP ImageSet to $DESTDIR"
 FILENAMES=$(ls $DESTDIR/*.tar*)
 for filename in $FILENAMES
 do
-  mv $filename $DESTDIR/containers  &&
+  mv $filename $DESTDIR/containers  && tar -xvf $DESTDIR/containers/$(basename $filename)  -C "$DESTDIR/containers" &&
   echo "OCP ImageSet [$(basename $filename)] extracted successfully!"
+  rm -f $DESTDIR/containers/$(basename $filename)
 done

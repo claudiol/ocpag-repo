@@ -39,7 +39,13 @@ elif [ ! -d $BUNDLEDIR ]; then
     log "Please pass in the top level dir for the bundle"
     exit 2
 fi
-    
+      
+if [ -f $BUNDLEDIR/bin/bundle-manifest.yaml ]; then
+  OCPVERSION=$(cat $BUNDLEDIR/bin/bundle-manifest.yaml | grep ocp_version | sed "s|ocp_version: ||g")
+else
+  OCPVERSION=4
+fi
+
 tar -cvf $TEMPDIR/ocp-containers.tar -C $BUNDLEDIR/containers/ .
 mkdir -p $TEMPDIR/containers_stage
 mv $TEMPDIR/ocp-containers.tar $TEMPDIR/containers_stage/

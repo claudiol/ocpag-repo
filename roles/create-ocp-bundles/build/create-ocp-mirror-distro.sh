@@ -40,6 +40,12 @@ elif [ ! -d $BUNDLEDIR ]; then
     exit 2
 fi
 
+if [ -f $BUNDLEDIR/bin/bundle-manifest.yaml ]; then
+  OCPVERSION=$(cat $BUNDLEDIR/bin/bundle-manifest.yaml | grep ocp_version | sed "s|ocp_version: ||g")
+else
+  OCPVERSION=4
+fi
+
 let COUNT=0
 mkdir -p $TEMPDIR/image_stage
 cp $ROLEDIR/build/scripts/extract-image-set.sh $TEMPDIR/image_stage/
@@ -47,7 +53,7 @@ for i in `ls $BUNDLEDIR/openshift-release-dev/*.tar`
 do 
   BASE=$(basename $i)
   cp $i $TEMPDIR/image_stage/$BASE
-  makeself --sha256 $TEMPDIR/image_stage  $TEMPDIR/ocp-image-set-installer-$COUNT.run "OpenShift Image Set Installer" ./extract-image-set.sh
+  makeself --sha256 $TEMPDIR/image_stage  $TEMPDIR/ocp-$OCPVERSION-image-set-installer-$COUNT.run "OpenShift Image Set Installer" ./extract-image-set.sh
   rm -f $TEMPDIR/image_stage/$BASE
   let COUNT++
 done

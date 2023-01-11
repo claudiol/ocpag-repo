@@ -40,10 +40,16 @@ elif [ ! -d $BUNDLEDIR ]; then
     exit 2
 fi
     
+if [ -f $BUNDLEDIR/bin/bundle-manifest.yaml ]; then
+  OCPVERSION=$(cat $BUNDLEDIR/bin/bundle-manifest.yaml | grep ocp_version | sed "s|ocp_version: ||g")
+else
+  OCPVERSION=4
+fi
+
 tar -cvf $TEMPDIR/ocp-binaries.tar -C $BUNDLEDIR/bin/ .
 mkdir -p $TEMPDIR/bin_stage
 mv $TEMPDIR/ocp-binaries.tar $TEMPDIR/bin_stage/
 echo `pwd`
 cp $ROLEDIR/build/scripts/setup-ocp-bin.sh $TEMPDIR/bin_stage/
-makeself --sha256 $TEMPDIR/bin_stage  $TEMPDIR/ocp-binaries-installer.run "OpenShift Binary Installer" ./setup-ocp-bin.sh
+makeself --sha256 $TEMPDIR/bin_stage  $TEMPDIR/ocp-$OCPVERSION-binaries-installer.run "OpenShift Binary Installer" ./setup-ocp-bin.sh
 rm -rf $TEMPDIR/bin_stage

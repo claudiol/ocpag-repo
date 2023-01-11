@@ -40,6 +40,10 @@ elif [ ! -d $BUNDLEDIR ]; then
     exit 2
 fi
     
+if [ -f $BUNDLEDIR/bin/bundle-manifest.yaml ]; then
+  OCP-VERSION=$(cat $BUNDLEDIR/bin/bundle-manifest.yaml | grep ocp_version | sed "s|ocp_version: ||g")
+fi
+
 tar -cvf $TEMPDIR/ocp-cloudcli-dependencies.tar -C $BUNDLEDIR/cloud-dependencies/ .
 mkdir -p $TEMPDIR/cloud_stage
 mv $TEMPDIR/ocp-cloudcli-dependencies.tar $TEMPDIR/cloud_stage/
