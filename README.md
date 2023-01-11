@@ -40,7 +40,7 @@ There is an example yaml file under examples/my_variables.yaml that you can use.
 | **cloud_selection** (*string*) | *aws, gcp, openstack, azure, rhv, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. | aws |
 | **destination** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. |  |
 | **desired_os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
-| **desired_ocp_version** (*string*)|  | Version of Openshift to target for pulling dependencies | 4.6.8 or stable-4.11 |
+| **desired_ocp_version** (*string*)| 4.6.8 or stable-4.11 | Version of Openshift to target for pulling dependencies |  |
 | **pull_secret_path** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. |  |
 
 <br />
