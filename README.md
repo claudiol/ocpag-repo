@@ -41,6 +41,7 @@ There is an example yaml file under examples/my_variables.yaml that you can use.
 | **destination** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. |  |
 | **desired_os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
 | **desired_ocp_version** (*string*)| 4.6.8 or stable-4.11 | Version of Openshift to target for pulling dependencies |  |
+| **desired_archive_size** (*string*)| 4 | Archive size in GiB passed to oc-mirror for size of tar balls created |  |
 | **pull_secret_path** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. |  |
 
 <br />
@@ -57,10 +58,11 @@ While it is preferred to just download one of the pre-fabricated bundles we have
 ```yaml
 cat > my_variables.yml << EOF
 cloud_selection: aws
-destination: /my/destination/folder
-os_platform: linux
-ocp_version: "4.6.8"
-pull_secret_path: /home/user1/pull_secret.txt
+destination: /home/claudiol/work/bundle
+desired_os_platform: linux
+desired_ocp_version: "4.11.20"
+pull_secret_path: /home/claudiol/work/oc-mirror/pull-secret.txt
+desired_archive_size: 4
 EOF
 
 ansible-playbook generate.yml --extra-vars "@my_variables.yml"
