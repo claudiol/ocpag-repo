@@ -22,6 +22,8 @@ do
     case $opt in
 	(d) BUNDLEDIR=$OPTARG
 	    ;;
+	(r) ROLEDIR=$OPTARG
+	    ;;
 	(t) TEMPDIR=$OPTARG
 	    ;;
 	(*) printf "Illegal option '-%s'\n" "$opt" && exit 1
@@ -41,6 +43,6 @@ fi
 tar -cvf $TEMPDIR/ocp-cloudcli-dependencies.tar -C $BUNDLEDIR/cloud-dependencies/ .
 mkdir -p $TEMPDIR/cloud_stage
 mv $TEMPDIR/ocp-cloudcli-dependencies.tar $TEMPDIR/cloud_stage/
-cp build/scripts/extract-cloudcli-set.sh $TEMPDIR/cloud_stage/
+cp $ROLEDIR/build/scripts/extract-cloudcli-set.sh $TEMPDIR/cloud_stage/
 makeself --sha256 $TEMPDIR/cloud_stage  $TEMPDIR/ocp-cloudcli-installer.run "OpenShift Supporting Services Installer" ./extract-cloudcli-set.sh
 rm -rf $TEMPDIR/cloud_stage

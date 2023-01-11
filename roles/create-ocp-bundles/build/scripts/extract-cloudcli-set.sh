@@ -55,30 +55,26 @@ if [ ! -f /tmp/.destdir ]; then
   echo $DESTDIR > /tmp/.destdir
 fi
 
-log -n "Creating OCP Supporting Containers $DESTDIR/containers ... "
-mkdir -p $DESTDIR/containers
+log -n "Creating OCP CloudCLI $DESTDIR/cloud-dependencies ... "
+mkdir -p $DESTDIR/cloud-dependencies
 if [ $? == 0 ]; then
-  log "Creating OCP Binaries $DESTDIR/containers ... done"
+  log "Creating OCP CloudCLI $DESTDIR/cloud-dependencies ... done"
 else
-  log "Creating OCP Binaries $DESTDIR/containers ... failed"
-  log "Ensure you have the proper permissions to create $DESTDIR/containers"
+  log "Creating OCP CloudCLI $DESTDIR/cloud-dependencies ... failed"
+  log "Ensure you have the proper permissions to create $DESTDIR/cloud-dependencies"
   exit 2
 fi
 
-log -n "Copying OCP ImageSet tarball to $DESTDIR"
-cp ./*.tar* $DESTDIR
+log -n "Copying OCP CloudCLI tarball to $DESTDIR"
+cp ./ocp-cloudcli-dependencies.tar $DESTDIR
 if [ $? == 0 ]; then
-  log "Copying OCP ImageSet tarball to $DESTDIR ... done"
+  log "Copying OCP CloudCLI tarball to $DESTDIR ... done"
 else
-  log "Copying OCP ImageSet tarball to $DESTDIR ... failed"
+  log "Copying OCP CloudCLI tarball to $DESTDIR ... failed"
   log "Ensure you have the proper permissions on $DESTDIR"
   exit 3
 fi
 
-log  "Extracting OCP ImageSet to $DESTDIR"
-FILENAMES=$(ls $DESTDIR/*.tar*)
-for filename in $FILENAMES
-do
-  mv $filename $DESTDIR/containers  &&
-  echo "OCP ImageSet [$(basename $filename)] extracted successfully!"
-done
+filename=ocp-cloudcli-dependencies.tar
+tar -xvf ./$filename -C "$DESTDIR/cloud-dependencies"  &&
+  echo "OCP CloudCLI [$(basename $filename)] extracted successfully!"

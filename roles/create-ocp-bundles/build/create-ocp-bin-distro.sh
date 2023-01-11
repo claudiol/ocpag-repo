@@ -22,6 +22,8 @@ do
     case $opt in
 	(d) BUNDLEDIR=$OPTARG
 	    ;;
+	(r) ROLEDIR=$OPTARG
+	    ;;
 	(t) TEMPDIR=$OPTARG
 	    ;;
 	(*) printf "Illegal option '-%s'\n" "$opt" && exit 1
@@ -42,6 +44,6 @@ tar -cvf $TEMPDIR/ocp-binaries.tar -C $BUNDLEDIR/bin/ .
 mkdir -p $TEMPDIR/bin_stage
 mv $TEMPDIR/ocp-binaries.tar $TEMPDIR/bin_stage/
 echo `pwd`
-cp build/scripts/setup-ocp-bin.sh $TEMPDIR/bin_stage/
+cp $ROLEDIR/build/scripts/setup-ocp-bin.sh $TEMPDIR/bin_stage/
 makeself --sha256 $TEMPDIR/bin_stage  $TEMPDIR/ocp-binaries-installer.run "OpenShift Binary Installer" ./setup-ocp-bin.sh
 rm -rf $TEMPDIR/bin_stage

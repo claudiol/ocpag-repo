@@ -22,6 +22,8 @@ do
     case $opt in
 	(d) BUNDLEDIR=$OPTARG
 	    ;;
+	(r) ROLEDIR=$OPTARG
+	    ;;
 	(t) TEMPDIR=$OPTARG
 	    ;;
 	(*) printf "Illegal option '-%s'\n" "$opt" && exit 1
@@ -41,6 +43,6 @@ fi
 tar -cvf $TEMPDIR/ocp-containers.tar -C $BUNDLEDIR/containers/ .
 mkdir -p $TEMPDIR/containers_stage
 mv $TEMPDIR/ocp-containers.tar $TEMPDIR/containers_stage/
-cp build/scripts/extract-containers-set.sh $TEMPDIR/containers_stage/
+cp $ROLEDIR/build/scripts/extract-containers-set.sh $TEMPDIR/containers_stage/
 makeself --sha256 $TEMPDIR/containers_stage  $TEMPDIR/ocp-containers-installer.run "OpenShift Supporting Services Installer" ./extract-containers-set.sh
 rm -rf $TEMPDIR/containers_stage

@@ -22,6 +22,8 @@ do
     case $opt in
     (d) BUNDLEDIR=$OPTARG
         ;;
+	(r) ROLEDIR=$OPTARG
+	    ;;
     (t) TEMPDIR=$OPTARG
         ;;
     (*) printf "Illegal option '-%s'\n" "$opt" && exit 1
@@ -40,7 +42,7 @@ fi
 
 let COUNT=0
 mkdir -p $TEMPDIR/image_stage
-cp build/scripts/extract-image-set.sh $TEMPDIR/image_stage/
+cp $ROLEDIR/build/scripts/extract-image-set.sh $TEMPDIR/image_stage/
 for i in `ls $BUNDLEDIR/openshift-release-dev/*.tar`
 do 
   BASE=$(basename $i)
