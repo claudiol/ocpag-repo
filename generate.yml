@@ -51,7 +51,7 @@
         dest: "{{ destination }}"
         pull_secret_file: "{{ pull_secret_path }}"
         os_platform: "{{ desired_os_platform }}"
-        ocp_version: "{{ desired_ocp_version }}"
+        ocp_channel: "{{ desired_ocp_version }}"
         archive_size: "{{ desired_archive_size }}"
     - role: cloud-dependencies
       vars:

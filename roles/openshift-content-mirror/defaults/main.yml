@@ -5,8 +5,8 @@ dest: "bundle"
 pull_secret_file: "/tmp/pull_secret.txt"
 ocp_channels:
   - name: stable-4.11
-  - minVersion: 4.11.20
-  - maxVersion: 4.11.20
+  - minVersion: 4.11.21
+  - maxVersion: 4.11.21
 ocp_version: "4.11.0"
 ocp_operators:
   - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.8 # References entire catalog
