@@ -152,5 +152,6 @@ Ansible Roles Included
 --------------
 
 * `cloud-dependencies` is the Ansible role that provides the cloud-dependencies folder, with the cloud CLI binaries and tertiary template materials as needed.
-* `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc` per the product documentation.
+* `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc-mirror` per the product documentation.
 * `rhcos-image-download` is the Ansible role that provide the appropriate RHCOS image depending on the cloud target selected. This is used to simplify/translate a simple input parameter such as `rhv, metal, aws, azure, ...` into its appropriate download link, as well as checksum validate the image file.
+* `create-ocp-bundles` this is the Ansible role that creates self extracting bundles.
