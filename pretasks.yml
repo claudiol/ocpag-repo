@@ -65,11 +65,14 @@
 - ansible.builtin.set_fact:
     ocpMinVersion: "{{ stable_v4_version.stdout }}"
     ocpMaxVersion: "{{ stable_v4_version.stdout }}"
+    ocpMajMinVersion: "{{ stable_v4_version.stdout.split('.')[0] }}.{{ stable_v4_version.stdout.split('.')[1] }}"
     ocp_version: "{{ stable_v4_version.stdout }}"
   when: stable_version == true
 
 - ansible.builtin.set_fact:
     ocpMinVersion: "{{ desired_ocp_version }}"
     ocpMaxVersion: "{{ desired_ocp_version }}"
+    ocpMajMinVersion: "{{ desired_ocp_version.split('.')[0] }}.{{ desired_ocp_version.split('.')[1] }}"
+    ocp_version: "{{ desired_ocp_version }}"
   when: stable_version == false
 

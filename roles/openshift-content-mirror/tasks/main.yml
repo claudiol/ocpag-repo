@@ -33,7 +33,6 @@
 - name: Extract OC Binary
   unarchive:
     src: "{{ oc_binary_tarball.dest }}"
-    #dest: "{{ working_dir.stdout }}/{{ dest }}"
     dest: "/tmp/"
     remote_src: yes
   register: oc_binary
@@ -70,7 +69,6 @@
 - name: Extract OC-MIRROR Binary
   unarchive:
     src: "{{ oc_mirror_binary_tarball.dest }}"
-    #dest: "{{ working_dir.stdout }}/{{ dest }}"
     dest: "/tmp/"
     remote_src: yes
   register: oc_mirror_binary
@@ -91,8 +89,13 @@
     dest: /tmp/image-config.yaml
 
 - name: "Mirroring Openshift Images for OCP Version [ {{ ocp_version }} ]"
-  shell: |
+  ansible.builtin.shell: |
     {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
+  register: oc_mirror_rc
+
+- name: Debug oc-mirror output
+  ansible.builtin.debug:
+    var: oc_mirror_rc
       
 # - name: Mirror Openshift 4 Content Locally
 #   shell: |
@@ -166,3 +169,16 @@
     src: /tmp/image-config.yaml
     dest: "{{ dest }}/bin"
     mode: '0644'
+
+- name: Removing temp files
+  ansible.builtin.file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop:
+    - kubectl
+    - oc
+    - oc-mirror
+    - "{{ oc_mirror_binary_tarball.dest }}"
+    - image-config.yaml
+    - bundle-manifest.yaml
+
