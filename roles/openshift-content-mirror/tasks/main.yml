@@ -163,6 +163,6 @@
 
 - name: Copy oc-mirror config file
   ansible.builtin.copy:
-    src: /tmp/mirror-config.yaml
+    src: /tmp/image-config.yaml
     dest: "{{ dest }}/bin"
     mode: '0644'
