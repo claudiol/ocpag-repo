@@ -120,20 +120,28 @@ A typical bundle generated with this toolset will appear like so:
 
 ```
 ➜  bundle tree -L 2
-.
+├── bin
+│   ├── bundle-manifest.yaml
+│   ├── image-config.yaml
+│   ├── kubectl
+│   ├── oc
+│   ├── oc-mirror
+│   └── openshift-install
 ├── cloud-dependencies
-│   ├── awscli-exe-linux-x86_64.zip
-│   ├── aws-vmimport-policy.json
-│   └── aws-vmimport-role.json
+│   ├── awscli-exe-linux-x86_64.zip
+│   ├── aws-vmimport-policy.json
+│   └── aws-vmimport-role.json
 ├── containers
-│   ├── nginx.tar
-│   └── registry.tar
-├── kubectl
-├── oc
-├── openshift-install
+│   ├── mirror-registry.tar.gz
+│   ├── nginx.tar
+│   └── registry.tar
 ├── openshift-release-dev
-│   ├── config
-│   └── v2
+│   ├── mirror_seq1_000000.tar
+│   ├── mirror_seq1_000001.tar
+│   ├── mirror_seq1_000002.tar
+│   ├── mirror_seq1_000003.tar
+│   ├── oc-mirror-workspace
+│   └── publish
 └── rhcos-aws.x86_64.vmdk.gz
 ```
 <br />
