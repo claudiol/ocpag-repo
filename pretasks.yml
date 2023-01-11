@@ -17,6 +17,10 @@
     path: "{{ pull_secret_path}}"
   register: result_pull_secret
 
+- ansible.builtin.set_fact:
+    stable_version: true
+  when: '"stable" in desired_ocp_version'
+
 - ansible.builtin.fail:
     msg: "pretasks | Pull secret [{{ pull_secret_path }}] does not exists. Please enter a valid pull secret file."
   when: result_pull_secret.stat.exists == false
@@ -25,7 +29,7 @@
   ansible.builtin.debug:
     msg: "pretasks | Desired OpenShift version: {{ desired_ocp_version }}"
   register: version_check
-  when: (desired_ocp_version.split('.') | length) > 2
+  when: 'stable_version == false and "stable" not in desired_ocp_version and (desired_ocp_version.split(".") | length) > 2'
 
 - debug:
     var: version_check
@@ -33,22 +37,22 @@
 - ansible.builtin.fail: 
     msg: "pretasks | The desired ocp version [{{ desired_ocp_version }}] is not valid. Valid Example: 4.10.1"
   when: 
-    - version_check.skip_reason is defined and version_check.skip_reason == "Conditional result was False"
+    - stable_version == false and version_check.skip_reason is defined and version_check.skip_reason == "Conditional result was False"
 
 - name: pretasks | OpenShift 4 versions
   ansible.builtin.debug:
     msg: "pretasks | Version {{ desired_ocp_version }} is valid"
   register: v4_result
-  when: 'desired_ocp_version|string in v4_versions.stdout'
+  when: 'stable_version == false and desired_ocp_version|string in v4_versions.stdout'
 
 - name: pretasks | Stable OpenShift 4 versions
   ansible.builtin.debug:
     msg: "pretasks | Version {{ desired_ocp_version }} is valid"
   register: stable_result
-  when: 'desired_ocp_version|string in stable_v4_versions.stdout'
+  when: 'stable_version == true and desired_ocp_version|string in stable_v4_versions.stdout'
 
 - ansible.builtin.fail: 
     msg: "pretasks | The desired ocp version [{{ desired_ocp_version }}] does not exits"
   when: 
-    - v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
-    - stable_result.skip_reason is defined and stable_result.skip_reason == "Conditional result was False"
+    - stable_version == false and v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
+    - stable_version == true and stable_result.skip_reason is defined and stable_result.skip_reason == "Conditional result was False"
