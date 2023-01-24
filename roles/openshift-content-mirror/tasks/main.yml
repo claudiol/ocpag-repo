@@ -37,14 +37,27 @@
     remote_src: yes
   register: oc_binary
 
+- name: "Checking if destination directory {{ dest }} exists."
+  ansible.builtin.stat:
+    path: "{{ dest }}"
+  register: dir_to_check
+    
+- name: "Creating {{ dest }} directory"
+  ansible.builtin.file:
+    path: "{{ dest }}"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+  when: dir_to_check.stat.isdir is not defined 
+
+
 - name: Creating bin directory
-  file:
+  ansible.builtin.file:
     path: "{{ dest }}/bin"
     state: directory
     mode: "u=rwx,g=rx,o=rx"
 
 - name: Copy Contents of OC Binary to Bundle
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/{{ item }}"
     dest: "{{ dest }}/bin"
     mode: '0550'
@@ -54,12 +67,12 @@
     - oc
 
 - name: Check if Openshift Content already exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ dest }}/openshift-release-dev"
   register: openshift_content
 
 - name: Download OC-MIRROR Binary
-  get_url: 
+  ansible.builtin.get_url: 
     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/oc-mirror.tar.gz"
     dest: "/tmp/"
     mode: '0660'
@@ -67,14 +80,14 @@
   register: oc_mirror_binary_tarball
 
 - name: Extract OC-MIRROR Binary
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ oc_mirror_binary_tarball.dest }}"
     dest: "/tmp/"
     remote_src: yes
   register: oc_mirror_binary
 
 - name: Copy Contents of OC Binary to Bundle
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/{{ item }}"
     dest: "{{ dest }}/bin"
     mode: '0550'
@@ -84,7 +97,7 @@
 
 
 - name: Creating oc-mirror template
-  template:
+  ansible.builtin.template:
     src: image-config.j2
     dest: /tmp/image-config.yaml
 
@@ -107,12 +120,12 @@
 #   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Check if Openshift Install Binary already exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ dest }}/bin/oc"
   register: openshift_oc_binary
 
 - name: Extract oc CLI Binary From Content
-  shell: |
+  ansible.builtin.shell: |
     {{ dest }}/bin/oc adm release extract -a {{ pull_secret_file }} \
     --command=oc --to={{ dest }}/bin \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
@@ -120,12 +133,12 @@
   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Check if Openshift Install Binary already exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ dest }}/bin/openshift-install"
   register: openshift_install_binary
 
 - name: Extract openshift-install Binary From Content
-  shell: |
+  ansible.builtin.shell: |
     {{ dest }}/bin/oc adm release extract -a {{ pull_secret_file }} \
     --command=openshift-install --to={{ dest }}/bin \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
@@ -133,12 +146,12 @@
   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Make Container Image Subdirectory
-  file:
+  ansible.builtin.file:
     path: "{{ dest }}/containers"
     state: directory
 
 - name: Download NGINX and Registry Images into Package
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "{{ dest }}/containers/"
     mode: '0660'
@@ -146,7 +159,7 @@
   loop: "{{ container_files }}"
 
 - name: "Download mirror-registry Binary"
-  get_url: 
+  ansible.builtin.get_url: 
     url: "https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz"
     dest: "{{ dest }}/containers/"
     mode: '0660'
@@ -154,7 +167,7 @@
   register: mirror_registry_binary_tarball
 
 - name: "Creating bundle manifest file"
-  template:
+  ansible.builtin.template:
     src: bundle-manifest.j2
     dest: /tmp/bundle-manifest.yaml
   
