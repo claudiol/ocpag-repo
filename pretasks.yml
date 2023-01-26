@@ -3,9 +3,16 @@
     path: "{{ destination }}"
   register: destination_path
 
-- ansible.builtin.fail:
-    msg: "pretasks | Path [{{ destination }}] does not exists. Please create the directory."
-  when: destination_path.stat.exists == false 
+- name: "Creating {{ dest }} directory"
+  ansible.builtin.file:
+    path: "{{ dest }}"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+  when: destination_path.stat.isdir is not defined
+
+#- ansible.builtin.fail:
+#    msg: "pretasks | Path [{{ destination }}] does not exists. Please create the directory."
+#  when: destination_path.stat.exists == false 
 
 - name: "Checking space in {{ destination }} directory" 
   ansible.builtin.debug:
