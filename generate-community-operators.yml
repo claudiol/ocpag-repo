@@ -7,7 +7,7 @@
 
     - name: destination
       prompt: "Desired path to dump operator content content (example: /home/user1/bundle/rh-operators)"
-      default: "./operators/redhat-operators"
+      default: "./operators/community-operators"
       private: no
 
     - name: desired_ocp_version
@@ -15,8 +15,8 @@
       default: "4.11"
       private: no
 
-    - name: desired_redhat_operators
-      prompt: "Desired Openshift redhat-operators "
+    - name: desired_community_operators
+      prompt: "Desired Openshift community-operators "
       private: no
 
     - name: desired_archive_size
@@ -31,9 +31,9 @@
     ansible.builtin.import_tasks: 'rhoperator-pretasks.yml'
 
   roles:
-    - role: redhat-operators
+    - role: community-operators
       vars:
         dest: "{{ destination }}"
-        operators: "[{{ desired_redhat_operators }}]"
+        operators: "[{{ desired_community_operators }}]"
         ocp_version: "{{ desired_ocp_version }}"
         archive_size: "{{ desired_archive_size }}"

@@ -38,5 +38,5 @@
     - v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
 
 - ansible.builtin.debug:
-    var: desired_operators
+    var: desired_redhat_operators
 

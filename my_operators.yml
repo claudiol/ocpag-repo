@@ -1,0 +1,16 @@
+destination: /home/claudiol/work/newbundle/operators
+desired_ocp_version: "4.11"
+olm_catalog_version: "4.11"
+desired_archive_size: 4
+desired_redhat_operators: 
+  - name: amq-streams
+    channel: release-2.6
+  - name: openshift-gitops
+    channel: latest
+desired_redhat_operators_additional_images:
+  - name: registry.redhat.io/redhat/redhat-operator-index:v4.11
+desired_community_operators:
+  - name: patterns-operator
+    channel: fast
+desired_community_operators_additional_images:
+  - name: registry.redhat.io/redhat/community-operator-index:v4.11

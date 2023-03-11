@@ -95,7 +95,6 @@
   loop:
     - oc-mirror
 
-
 - name: Creating oc-mirror template
   ansible.builtin.template:
     src: image-config.j2

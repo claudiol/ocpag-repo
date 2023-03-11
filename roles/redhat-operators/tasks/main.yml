@@ -3,3 +3,23 @@
 - name: Parameters passed
   ansible.builtin.debug:
     msg: "dest: {{ dest }} operators: {{ operators }} ocp_version: {{ ocp_version }} archive_size: {{ archive_size }}"
+
+- name: "Creating {{ dest }}/operators/redhat directory"
+  file:
+    path: "{{ dest }}/redhat"
+    state: directory
+
+- name: Creating oc-mirror redhat operator template
+  ansible.builtin.template:
+    src: redhat-operator-images.j2
+    dest: /tmp/redhat-operator-images.yaml
+
+- name: "Mirroring Red Hat operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.shell:
+    {{ dest }}/bin/oc-mirror --config /tmp/redhat-operator-images.yaml file://{{ dest }}/redhat
+  register: oc_mirror_rc
+
+- name: Debug oc-mirror output
+  ansible.builtin.debug:
+    var: oc_mirror_rc
+
