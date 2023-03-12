@@ -5,7 +5,7 @@
   ansible.builtin.shell: "{{ role_path }}/build/create-ocp-bin-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
   register: r_bin_distro
 
-- name: binary bundle debug
+- name: Binary bundle debug
   debug:
     var: r_bin_distro
 
@@ -20,3 +20,11 @@
 - name: Create Self-Extracting CloudCLI bundle
   ansible.builtin.shell: "{{ role_path }}/build/create-cloud-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
   register: r_cloud_distro
+
+- name: Create Self-Extracting Red Hat Operator bundle
+  ansible.builtin.shell: "{{ role_path }}/build/create-redhat-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  register: r_rh_operator_distro
+
+- name: Create Self-Extracting Community Operator bundle
+  ansible.builtin.shell: "{{ role_path }}/build/create-community-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  register: r_community_operator_distro

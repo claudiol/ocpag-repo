@@ -6,7 +6,7 @@
 
 - name: "Creating {{ dest }}/operators/redhat directory"
   file:
-    path: "{{ dest }}/redhat"
+    path: "{{ dest }}/operators/redhat"
     state: directory
 
 - name: Creating oc-mirror redhat operator template
@@ -15,8 +15,8 @@
     dest: /tmp/redhat-operator-images.yaml
 
 - name: "Mirroring Red Hat operator Images for OCP Version [ {{ ocp_version }} ]"
-  ansible.builtin.shell:
-    {{ dest }}/bin/oc-mirror --config /tmp/redhat-operator-images.yaml file://{{ dest }}/redhat
+  ansible.builtin.shell: |
+    oc-mirror --config /tmp/redhat-operator-images.yaml file://{{ dest }}/operators/redhat
   register: oc_mirror_rc
 
 - name: Debug oc-mirror output

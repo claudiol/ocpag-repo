@@ -6,7 +6,7 @@
 
 - name: "Creating {{ dest }}/operators/community directory"
   ansible.builtin.file:
-    path: "{{ dest }}/community"
+    path: "{{ dest }}/operators/community"
     state: directory
 
 - name: Creating oc-mirror redhat operator template
@@ -16,7 +16,7 @@
 
 - name: "Mirroring Community operator Images for OCP Version [ {{ ocp_version }} ]"
   ansible.builtin.shell: |
-    oc-mirror --config /tmp/community-operator-images.yaml file://{{ dest }}/community
+    oc-mirror --config /tmp/community-operator-images.yaml file://{{ dest }}/operators/community
   register: oc_mirror_rc
 
 - name: Debug oc-mirror output

@@ -7,7 +7,8 @@
 
     - name: destination
       prompt: "Desired path to dump operator content content (example: /home/user1/bundle/rh-operators)"
-      default: "./operators/redhat-operators"
+      default: "./operators/redhat"
+
       private: no
 
     - name: desired_ocp_version
