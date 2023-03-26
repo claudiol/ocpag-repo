@@ -12,6 +12,10 @@ desired_redhat_operators:
 desired_redhat_operators_additional_images:
   - name: registry.redhat.io/redhat/redhat-operator-index:v4.11
   - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.11
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.11
+  - name: registry.access.redhat.com/ubi8/httpd-24:1-226
+  - name: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
+  - name: registry.access.redhat.com/ubi8/ubi-minimal:latest
 #
 # To list community operators you can run:
 # oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.11
@@ -19,6 +23,8 @@ desired_community_operators:
   - name: patterns-operator
     channel: fast
   - name: vault-config-operator
+    channel: alpha
+  - name: external-secrets-operator
     channel: alpha
 desired_community_operators_additional_images:
   - name: registry.redhat.io/redhat/community-operator-index:v4.11
