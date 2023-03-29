@@ -15,7 +15,10 @@ desired_redhat_operators_additional_images:
   - name: registry.redhat.io/redhat/certified-operator-index:v4.11
   - name: registry.access.redhat.com/ubi8/httpd-24:1-226
   - name: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
+  - name: registry.redhat.io/ansible-automation-platform-23/ee-supported-rhel8:latest
+  - name: ghcr.io/external-secrets/external-secrets:v0.8.1-ubi
   - name: registry.access.redhat.com/ubi8/ubi-minimal:latest
+  - name: quay.io/hybridcloudpatterns/utility-container
 #
 # To list community operators you can run:
 # oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.11
