@@ -19,6 +19,19 @@
     oc-mirror --config /tmp/redhat-operator-images.yaml file://{{ dest }}/operators/redhat
   register: oc_mirror_rc
 
+- name: Copy oc-mirror config file
+  ansible.builtin.copy:
+    src: /tmp/redhat-operator-images.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
+
+- name: Removing temp files
+  ansible.builtin.file:
+    path: "/tmp/{{ item }}"
+    state: absent
+  loop:
+    - redhat-operator-images.yaml
+
 - name: Debug oc-mirror output
   ansible.builtin.debug:
     var: oc_mirror_rc

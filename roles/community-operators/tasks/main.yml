@@ -19,6 +19,19 @@
     oc-mirror --config /tmp/community-operator-images.yaml file://{{ dest }}/operators/community
   register: oc_mirror_rc
 
+- name: Copy oc-mirror config file
+  ansible.builtin.copy:
+    src: /tmp/community-operator-images.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
+
+- name: Removing temp files
+  ansible.builtin.file:
+    path: "/tmp/{{ item }}"
+    state: absent
+    loop:
+      - community-operator-images.yaml
+
 - name: Debug oc-mirror output
   ansible.builtin.debug:
     var: oc_mirror_rc
