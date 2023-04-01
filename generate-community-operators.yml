@@ -26,9 +26,9 @@
 
   pre_tasks:
   - name: generate | include rhoperator-facts-setup
-    ansible.builtin.import_tasks: 'rhoperator-facts-setup.yml'
+    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-facts-setup.yml'
   - name: generate | include pretasks
-    ansible.builtin.import_tasks: 'rhoperator-pretasks.yml'
+    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
 
   roles:
     - role: community-operators

@@ -35,11 +35,11 @@
 
   pre_tasks:
   - name: generate | include facts-setup
-    ansible.builtin.import_tasks: 'facts-setup.yml'
+    ansible.builtin.import_tasks: 'ansible/playbooks/facts-setup.yml'
   - name: generate | include pretasks
     vars:
       stable_version: false  
-    ansible.builtin.import_tasks: 'pretasks.yml'
+    ansible.builtin.import_tasks: 'ansible/playbooks/pretasks.yml'
 
   roles:
     - role: rhcos-image-download
