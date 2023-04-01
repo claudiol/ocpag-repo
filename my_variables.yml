@@ -1,7 +1,7 @@
 cloud_selection: aws
-destination: /home/claudiol/work/bundle
+destination: /home/claudiol/work/bundle-4.12
 desired_os_platform: linux
-#desired_ocp_version: "stable-4.11"
-desired_ocp_version: "4.11.20"
+desired_ocp_version: "stable-4.12"
+#desired_ocp_version: "4.11.20"
 pull_secret_path: /home/claudiol/work/oc-mirror/pull-secret.txt
 desired_archive_size: 4
