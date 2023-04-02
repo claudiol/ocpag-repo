@@ -46,8 +46,8 @@ else
   OCPVERSION=4
 fi
 
-tar -cvf $TEMPDIR/ocp-containers.tar -C $BUNDLEDIR/containers/ .
 mkdir -p $TEMPDIR/containers_stage
+tar -cvf $TEMPDIR/ocp-containers.tar -C $BUNDLEDIR/containers/ .
 mv $TEMPDIR/ocp-containers.tar $TEMPDIR/containers_stage/
 cp $ROLEDIR/build/scripts/extract-containers-set.sh $TEMPDIR/containers_stage/
 makeself --sha256 $TEMPDIR/containers_stage  $TEMPDIR/ocp-containers-installer.run "OpenShift Supporting Services Installer" ./extract-containers-set.sh

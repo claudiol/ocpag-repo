@@ -46,8 +46,8 @@ else
   OCPVERSION=4
 fi
 
-tar -cvf $TEMPDIR/ocp-binaries.tar -C $BUNDLEDIR/bin/ .
 mkdir -p $TEMPDIR/bin_stage
+tar -cvf $TEMPDIR/ocp-binaries.tar -C $BUNDLEDIR/bin/ .
 mv $TEMPDIR/ocp-binaries.tar $TEMPDIR/bin_stage/
 echo `pwd`
 cp $ROLEDIR/build/scripts/setup-ocp-bin.sh $TEMPDIR/bin_stage/

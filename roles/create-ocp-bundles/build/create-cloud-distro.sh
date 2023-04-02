@@ -44,8 +44,8 @@ if [ -f $BUNDLEDIR/bin/bundle-manifest.yaml ]; then
   OCP-VERSION=$(cat $BUNDLEDIR/bin/bundle-manifest.yaml | grep ocp_version | sed "s|ocp_version: ||g")
 fi
 
-tar -cvf $TEMPDIR/ocp-cloudcli-dependencies.tar -C $BUNDLEDIR/cloud-dependencies/ .
 mkdir -p $TEMPDIR/cloud_stage
+tar -cvf $TEMPDIR/ocp-cloudcli-dependencies.tar -C $BUNDLEDIR/cloud-dependencies/ .
 mv $TEMPDIR/ocp-cloudcli-dependencies.tar $TEMPDIR/cloud_stage/
 cp $ROLEDIR/build/scripts/extract-cloudcli-set.sh $TEMPDIR/cloud_stage/
 makeself --sha256 $TEMPDIR/cloud_stage  $TEMPDIR/ocp-cloudcli-installer.run "OpenShift Supporting Services Installer" ./extract-cloudcli-set.sh
