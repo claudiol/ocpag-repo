@@ -9,6 +9,12 @@ This tool will not assume simultaneous contiguous access to a destination image 
 
 This tool will not create or fill an image registry for you.
 
+Pre-reqs
+--------------
+
+* Ansible
+* Makeself - makeself.noarch
+
 Pre-Generated Bundles
 --------------
 
@@ -18,13 +24,6 @@ Please check releases for latest download links.
 
 | Status | Download Link | Checksum |
 |--|--|--|
-| ![AWS Bundle](https://github.com/mikthoma/ocpag-repo/workflows/AWS%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-aws-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/sha256sum.txt) |
-| ![Azure Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Azure%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/aws/openshift4-azure-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/azure/sha256sum.txt) |
-| ![VMWare Bundle](https://github.com/mikthoma/ocpag-repo/workflows/VMWare%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/openshift4-vmware-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/vmware/sha256sum.txt) |
-| ![GCP Bundle](https://github.com/mikthoma/ocpag-repo/workflows/GCP%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/openshift4-gcp-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/gcp/sha256sum.txt) |
-| ![Openstack Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Openstack%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/openshift4-openstack-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/openstack/sha256sum.txt) |
-| ![Metal Bundle](https://github.com/mikthoma/ocpag-repo/workflows/Metal%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/openshift4-metal-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/baremetal/sha256sum.txt) |
-| ![Red Hat Virtualization Bundle](https://github.com/mikthoma/ocpag-repo/workflows/RHV%20Bundle/badge.svg?branch=4.6.8) | [Download](https://ocpagpkg.s3-us-west-1.amazonaws.com/rhv/openshift4-rhv-linux-4.6.8-x86_64.tar.gz) | [sha256sum](https://ocpagpkg.s3-us-west-1.amazonaws.com/rhv/sha256sum.txt) |
 
 <br />
 
@@ -43,6 +42,17 @@ There is an example yaml file under examples/my_variables.yaml that you can use.
 | **desired_ocp_version** (*string*)| 4.6.8 or stable-4.11 | Version of Openshift to target for pulling dependencies |  |
 | **desired_archive_size** (*string*)| 4 | Archive size in GiB passed to oc-mirror for size of tar balls created |  |
 | **pull_secret_path** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. |  |
+| **bundle_destination_dir** (*string*) | | Temporary directory where self-extracting bundles will be created | |
+| **openshift_full_channel** (*bool*) | | Whether you want the full channel or not as an oc-mirror option ||
+| **openshift_min_version** || oc-mirror optional: min value for OpenShift version ||
+| **openshift_max_version** || oc-mirror optional: max value for OpenShift version ||
+| **openshift_shortest_path** || oc-mirror optional: Tell oc-mirror to use shortest path ||
+| **olm_catalog_version** || Version of OLM catalog to use for operators ||
+| **olm_debug**           || Debug flag to show OLM versions during run ||
+| **desired_redhat_operators** || List of Red Hat Operators to be mirrored | *name* - name of operator, *channel* - channel for operator |
+| **desired_redhat_operators_additional_images** || List of additional images | *name* - Name of additional image |
+| **desired_community_operators** || List of Community Operators to be mirrored ||
+| **desired_community_operators_additional_images** || List of additional images | *name* - Name of additional image |
 
 <br />
 
@@ -57,12 +67,152 @@ While it is preferred to just download one of the pre-fabricated bundles we have
 
 ```yaml
 cat > my_variables.yml << EOF
+###################################
+#
+# Variables for OpenShift Images gathering
+#
+###################################
+
+#
+# Cloud selection
+#
 cloud_selection: aws
-destination: /home/claudiol/work/bundle
+
+#
+# Destination directory where you want all the binaries and images to be placed.
+#
+destination: /home/claudiol/work/bundle-4.11
+
+#
+# Platform target
+#
 desired_os_platform: linux
-desired_ocp_version: "4.11.20"
+
+#
+# Version of OpenShift needed.  Valid values are: stable-4.X or 4.X.X
+#
+#desired_ocp_version: "stable-4.12"
+desired_ocp_version: "4.11.34"
+
+#
+# Path to the OpenShift Pull Secret
+#
 pull_secret_path: /home/claudiol/work/oc-mirror/pull-secret.txt
+
+
+#
+# Temporary directory where self-extracting bundles will be created
+#
+bundle_destination_dir: /home/claudiol/temp-4.11
+
+###################################
+# oc-mirror variables
+###################################
+
+#
+# oc-mirror archive size
+#
 desired_archive_size: 4
+
+#
+# Whether you want the full channel or not
+#
+openshift_full_channel: false
+
+#
+# Minimal version for OpenShift
+#
+openshift_min_version:
+
+#
+# Max version for OpenShift
+#
+openshift_max_version: 
+
+#
+# Shortest path
+#
+openshift_shortest_path: false
+
+#
+# Operator full catalog
+#
+operator_full_catalog: false
+
+###################################
+# 
+# Operator Section
+#
+# Variables for Operator Images
+#
+###################################
+
+#
+# OLM version
+#
+olm_catalog_version: "4.11"
+olm_debug: false
+
+# 
+# Operators from the redhat-operators catalog
+#
+# To list redhat operators you can run:
+# oc-mirror list operators --catalog registry.redhat.io/redhat/redhat-operator-index:v4.12
+#
+desired_redhat_operators: 
+  - name: advanced-cluster-management
+    channel: release-2.7
+  - name: openshift-gitops-operator
+    channel: latest
+
+#
+# Additional images needed
+#
+desired_redhat_operators_additional_images:
+  - name: registry.redhat.io/redhat/redhat-operator-index:v4.11
+  - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.11
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.11
+  - name: registry.access.redhat.com/ubi8/httpd-24:1-226
+  - name: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
+  - name: registry.redhat.io/ansible-automation-platform-23/ee-supported-rhel8:latest
+  - name: ghcr.io/external-secrets/external-secrets:v0.8.1-ubi
+  - name: registry.access.redhat.com/ubi8/ubi-minimal:latest
+  - name: quay.io/hybridcloudpatterns/utility-container
+
+#
+# 
+# Operators from the community-operators catalog
+#
+# To list community operators you can run:
+# oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.12
+desired_community_operators:
+  - name: patterns-operator
+    channel: fast
+  - name: vault-config-operator
+    channel: alpha
+  - name: external-secrets-operator
+    channel: alpha
+
+#
+# Additional images needed
+#
+desired_community_operators_additional_images:
+  - name: registry.redhat.io/redhat/community-operator-index:v4.11
+
+
+#
+# 
+# Operators from the certified-operators catalog
+#
+# To list community operators you can run:
+# oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.12
+desired_certified_operators: []
+
+#
+# Additional images needed
+#
+desired_certified_operators_additional_images:
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.11
 EOF
 
 ansible-playbook generate.yml --extra-vars "@my_variables.yml"
@@ -73,18 +223,11 @@ ansible-playbook generate.yml --extra-vars "@my_variables.yml"
 **Alternative**: Run the playbook as needed, and provide the inputs to the prompts. This is preferred for direct or manual use as a field tool with no preparation.
 
 ```
-➜  ansible-playbook generate.yml
-
-
-
-[WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
-Desired path to dump content (example: /home/user1/bundle): /home/user1/folder
-Cloud to generate content for (aws,gcp,azure,metal,vmware,openstack) [aws]: 
-Path to your Pull Secret file (example: /home/user1/pull_secret.txt): /home/user1/pull_secret.txt
-Desired Operating System Platform for execution (linux,macos,windows) [linux]: 
-Desired Openshift Version [4.6.8]: 
-
-PLAY [Generate Openshift Bundle] ***********************************
+➜  $ ./create-bundle.sh                                                                                                                
+Generating OpenShift images ... done                                                                                                      
+Generating Red Hat OpenShift operators ... done                                                                                           
+Generating Community OpenShift operators ... done                                                                                         
+Generating OpenShift self-extracting bundles ... done  
 ```
 
 <br />
@@ -120,13 +263,16 @@ A typical bundle generated with this toolset will appear like so:
 
 ```
 ➜  bundle tree -L 2
+.
 ├── bin
 │   ├── bundle-manifest.yaml
+│   ├── community-operator-images.yaml
 │   ├── image-config.yaml
 │   ├── kubectl
 │   ├── oc
 │   ├── oc-mirror
-│   └── openshift-install
+│   ├── openshift-install
+│   └── redhat-operator-images.yaml
 ├── cloud-dependencies
 │   ├── awscli-exe-linux-x86_64.zip
 │   ├── aws-vmimport-policy.json
@@ -136,17 +282,47 @@ A typical bundle generated with this toolset will appear like so:
 │   ├── nginx.tar
 │   └── registry.tar
 ├── openshift-release-dev
-│   ├── mirror_seq1_000000.tar
-│   ├── mirror_seq1_000001.tar
-│   ├── mirror_seq1_000002.tar
-│   ├── mirror_seq1_000003.tar
-│   ├── oc-mirror-workspace
-│   └── publish
+│   └── oc-mirror-workspace
+│       └── src
+│           ├── charts
+│           ├── publish
+│           ├── release-signatures
+│           └── v2
+├── operators
+│   ├── community
+│   │   ├── mirror_seq1_000000.tar
+│   │   ├── oc-mirror-workspace
+│   │   └── publish
+│   └── redhat
+│       ├── mirror_seq1_000000.tar
+│       ├── mirror_seq1_000001.tar
+│       ├── mirror_seq1_000002.tar
+│       ├── mirror_seq1_000003.tar
+│       ├── oc-mirror-workspace
+│       └── publish
 └── rhcos-aws.x86_64.vmdk.gz
+
+18 directories, 20 files
 ```
 <br />
 
 This project/tool does not assume a specific structure, if you so desire, you can leverage the individual Ansible roles in your own projects and create your own generation playbook(s). Please see each role's README.md for role-specific documentation.
+
+Self-extracting Bundle files created
+--------------
+Self-extracting files created for a particular OpenShift version.
+
+```
+.
+├── ocp-4.11.34-binaries-installer.run
+├── ocp-cloudcli-installer.run
+├── ocp-community-operators-installer-0.run
+├── ocp-containers-installer.run
+├── ocp-redhat-operators-installer-0.run
+├── ocp-redhat-operators-installer-1.run
+├── ocp-redhat-operators-installer-2.run
+└── ocp-redhat-operators-installer-3.run
+```
 
 Ansible Roles Included
 --------------
