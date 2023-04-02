@@ -9,6 +9,9 @@ archiveSize: {{ archive_size }}
 mirror:
   operators:
     - catalog: registry.redhat.io/redhat/redhat-operator-index:v{{ olm_catalog_version }}
+{% if operator_full_catalog %}
+        full: true
+{% endif %}
       packages:
 {% for operator in desired_redhat_operators %}
         - name: {{ operator.name }} 

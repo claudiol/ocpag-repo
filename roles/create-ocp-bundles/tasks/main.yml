@@ -2,7 +2,7 @@
 # tasks file for create-ocp-bundles
 
 - name: Create Self-Extracting binary bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-bin-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-bin-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_bin_distro
 
 - name: Binary bundle debug
@@ -10,21 +10,21 @@
     var: r_bin_distro
 
 - name: Create Self-Extracting ImageSet bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-mirror-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-mirror-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_mirror_distro
 
 - name: Create Self-Extracting Containers bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-containers-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-ocp-containers-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_containers_distro
 
 - name: Create Self-Extracting CloudCLI bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-cloud-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-cloud-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_cloud_distro
 
 - name: Create Self-Extracting Red Hat Operator bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-redhat-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-redhat-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_rh_operator_distro
 
 - name: Create Self-Extracting Community Operator bundle
-  ansible.builtin.shell: "{{ role_path }}/build/create-community-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }}"
+  ansible.builtin.shell: "{{ role_path }}/build/create-community-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_community_operator_distro
