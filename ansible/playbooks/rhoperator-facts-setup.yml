@@ -1,6 +1,7 @@
 - name: pretasks | Retrieving available OpenShift 4 versions
-  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
-  register: v4_versions
+  #ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+  ansible.builtin.shell: oc-mirror list releases | grep -v Available
+  register: olm_v4_versions
 
 - ansible.builtin.set_fact:
     destination_parts: "{{ destination.split('/') }}"
@@ -18,3 +19,7 @@
     - "{{ destination_parts }}"
     - "{{ ansible_mounts }}"
   when: 'item.0 is defined and item.1.mount is defined and item.0 |string in item.1.mount'
+
+- ansible.builtin.set_fact:
+    avariable: "{{ openshift_min_version }}"
+  when: 'openshift_min_version is defined'

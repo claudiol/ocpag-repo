@@ -12,31 +12,33 @@
     msg: "Looks like you have enough space. Available space [{{ disk_usage_s }}GiB]"
   when: 'mount_size_available is defined and disk_usage_s|int > 30'
 
-- name: "pretasks | Checking ocp_version"
+- name: "pretasks | Checking olm_catalog_version"
   ansible.builtin.debug:
-    msg: "pretasks | Desired OpenShift version: {{ desired_ocp_version }}"
+    msg: "pretasks | Desired OpenShift OLM Catalog version: {{ olm_catalog_version }}"
   register: version_check
-  when: (desired_ocp_version.split('.') | length) == 2 and desired_ocp_version.0 | string == "4"
+  when: (olm_catalog_version.split('.') | length) == 2 and olm_catalog_version.0 | string == "4"
 
 - debug:
-    var: v4_versions
+    var: olm_v4_versions
+  when: olm_debug == true
     
 - ansible.builtin.fail: 
-    msg: "pretasks | The desired ocp version [{{ desired_ocp_version }}] is not valid. Valid Example: 4.10"
+    msg: "pretasks | The desired ocp OLM Catalog version [{{ olm_catalog_version }}] is not valid. Valid Example: 4.10"
   when: 
     - version_check.skip_reason is defined and version_check.skip_reason == "Conditional result was False"
 
 - name: pretasks | OpenShift 4 versions
   ansible.builtin.debug:
-    msg: "pretasks | Version {{ desired_ocp_version }} is valid"
+    msg: "pretasks | Version {{ olm_catalog_version }} is valid"
   register: v4_result
-  when: 'v4_versions.stdout is search(desired_ocp_version)'
+  when: 'olm_v4_versions.stdout is search(olm_catalog_version)'
 
 - ansible.builtin.fail: 
-    msg: "pretasks | The desired ocp version [{{ desired_ocp_version }}] does not exits"
+    msg: "pretasks | The desired ocp version [{{ olm_catalog_version }}] does not exits"
   when: 
     - v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
 
 - ansible.builtin.debug:
     var: desired_redhat_operators
+  when: olm_debug == true
 

@@ -52,6 +52,9 @@
   register: v4_result
   when: 'stable_version == false and desired_ocp_version|string in v4_versions.stdout'
 
+- debug:
+    var: stable_v4_versions
+
 - name: pretasks | Checking Stable OpenShift 4 version
   ansible.builtin.debug:
     msg: "pretasks | Version {{ desired_ocp_version }} is valid"
@@ -59,7 +62,7 @@
   when: 'stable_version == true and desired_ocp_version|string in stable_v4_versions.stdout'
 
 - name: pretasks | Getting version for Stable OpenShift 4
-  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable-4.11 | grep 'href=\"openshift-client-linux-4' | cut -d '=' -f 2 | tr -d '"' | sed "s|>||g" | sed "s|openshift-client-linux-||g" | sed "s|.tar.gz||g"
+  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }} | grep 'href=\"openshift-client-linux-4' | cut -d '=' -f 2 | tr -d '"' | sed "s|>||g" | sed "s|openshift-client-linux-||g" | sed "s|.tar.gz||g"
   register: stable_v4_version
   when: 'stable_version == true'
 
@@ -83,3 +86,5 @@
     ocp_version: "{{ desired_ocp_version }}"
   when: stable_version == false
 
+- ansible.builtin.debug:
+    var: ocp_version
