@@ -1,0 +1,31 @@
+kind: ImageSetConfiguration
+apiVersion: mirror.openshift.io/v1alpha2
+kind: ImageSetConfiguration
+archiveSize: {{ archive_size }}
+{% if ocp_channel %}
+mirror:
+  platform:
+{% if desired_os_platform != 'linux' %}
+    architectures:
+      - {{ desired_os_platform | quote }}
+{% endif %}
+    channels:
+      - name: stable-{{ ocpMajMinVersion }}
+{% if openshift_full_channel %}
+        full: true
+{% else %}
+{% if ( (openshift_min_version and openshift_max_version) ) %}
+        minVersion: {{ openshift_min_version }}
+        maxVersion: {{ openshift_max_version }}
+{% else %}
+        minVersion: {{ ocp_version }}
+        maxVersion: {{ ocp_version }}
+{% endif %}
+{% if openshift_shortest_path %}
+        shortestPath: true
+{% endif %}
+{% endif %}
+{% endif %}
+storageConfig:
+  local:
+    path: {{ destination }}/openshift-release-dev

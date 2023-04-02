@@ -1,0 +1,16 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+    - name: destination
+      prompt: "Enter source bundle dir:  "
+      default: "~/work/bundle"
+      private: no
+
+  roles:
+    - role: create-ocp-bundles 
+      vars:
+        source_bundle_dir: "{{ destination }}"
+        cloud_target: "{{ cloud_selection }}"

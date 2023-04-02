@@ -1,0 +1,40 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  vars_prompt:
+
+    - name: destination
+      prompt: "Desired path to dump operator content content (example: /home/user1/bundle/rh-operators)"
+      default: "./operators/redhat"
+
+      private: no
+
+    - name: olm_catalog_version
+      prompt: "Major version of OpenShift (example: 4.10)"
+      default: "4.11"
+      private: no
+
+    - name: desired_redhat_operators
+      prompt: "Desired Openshift redhat-operators "
+      private: no
+
+    - name: desired_archive_size
+      prompt: Maximum size (GiB) of each archive
+      default: "4"
+      private: no
+
+  pre_tasks:
+  - name: generate | include rhoperator-facts-setup
+    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-facts-setup.yml'
+  - name: generate | include pretasks
+    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
+
+  roles:
+    - role: redhat-operators
+      vars:
+        dest: "{{ destination }}"
+        operators: "[{{ desired_redhat_operators }}]"
+        ocp_version: "{{ olm_catalog_version }}"
+        archive_size: "{{ desired_archive_size }}"

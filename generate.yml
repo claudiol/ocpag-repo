@@ -18,15 +18,28 @@
       prompt: "Path to your Pull Secret file (example: /home/user1/pull_secret.txt)"
       private: no
 
-    - name: os_platform
+    - name: desired_os_platform
       prompt: Desired Operating System Platform for execution (linux,macos,windows)
       default: "linux"
       private: no
 
-    - name: ocp_version
+    - name: desired_ocp_version
       prompt: Desired Openshift Version
       default: "4.6.8"
       private: no
+
+    - name: desired_archive_size
+      prompt: Maximum size (GiB) of each archive
+      default: "4"
+      private: no
+
+  pre_tasks:
+  - name: generate | include facts-setup
+    ansible.builtin.import_tasks: 'ansible/playbooks/facts-setup.yml'
+  - name: generate | include pretasks
+    vars:
+      stable_version: false  
+    ansible.builtin.import_tasks: 'ansible/playbooks/pretasks.yml'
 
   roles:
     - role: rhcos-image-download
@@ -37,10 +50,11 @@
       vars:
         dest: "{{ destination }}"
         pull_secret_file: "{{ pull_secret_path }}"
-        os_platform: "{{ os_platform }}"
-        ocp_version: "{{ ocp_version }}"
+        os_platform: "{{ desired_os_platform }}"
+        ocp_channel: "{{ desired_ocp_version }}"
+        archive_size: "{{ desired_archive_size }}"
     - role: cloud-dependencies
       vars:
         cloud_target: "{{ cloud_selection }}"
         dest: "{{ destination }}"
-        os_platform: "{{ os_platform }}"
+        os_platform: "{{ desired_os_platform }}"

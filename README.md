@@ -31,14 +31,17 @@ Please check releases for latest download links.
 Playbook Variables
 --------------
 
+There is an example yaml file under examples/my_variables.yaml that you can use.
+
 <br />
 
 | Variable | Options | Description | Default Value |
 |--|--|--|--|
 | **cloud_selection** (*string*) | *aws, gcp, openstack, azure, rhv, vmware, metal* | Selects the appropriate target image to download from the latest releases image repository. | aws |
 | **destination** (*string*) |  | Local path where you want the image to be saved. Can be a directory, or an absolute file path. |  |
-| **os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
-| **ocp_version** (*string*)|  | Version of Openshift to target for pulling dependencies | 4.6.8 |
+| **desired_os_platform** (*string*)| *linux, macos, windows* | Which type of operating system you want to download binaries such as *oc* and *openshift-install* for. | linux |
+| **desired_ocp_version** (*string*)| 4.6.8 or stable-4.11 | Version of Openshift to target for pulling dependencies |  |
+| **desired_archive_size** (*string*)| 4 | Archive size in GiB passed to oc-mirror for size of tar balls created |  |
 | **pull_secret_path** (*string*) |  | Path to your pull secret file, which can be obtained in the Red Hat Cluster Manager website. |  |
 
 <br />
@@ -55,10 +58,11 @@ While it is preferred to just download one of the pre-fabricated bundles we have
 ```yaml
 cat > my_variables.yml << EOF
 cloud_selection: aws
-destination: /my/destination/folder
-os_platform: linux
-ocp_version: "4.6.8"
-pull_secret_path: /home/user1/pull_secret.txt
+destination: /home/claudiol/work/bundle
+desired_os_platform: linux
+desired_ocp_version: "4.11.20"
+pull_secret_path: /home/claudiol/work/oc-mirror/pull-secret.txt
+desired_archive_size: 4
 EOF
 
 ansible-playbook generate.yml --extra-vars "@my_variables.yml"
@@ -116,20 +120,28 @@ A typical bundle generated with this toolset will appear like so:
 
 ```
 ➜  bundle tree -L 2
-.
+├── bin
+│   ├── bundle-manifest.yaml
+│   ├── image-config.yaml
+│   ├── kubectl
+│   ├── oc
+│   ├── oc-mirror
+│   └── openshift-install
 ├── cloud-dependencies
-│   ├── awscli-exe-linux-x86_64.zip
-│   ├── aws-vmimport-policy.json
-│   └── aws-vmimport-role.json
+│   ├── awscli-exe-linux-x86_64.zip
+│   ├── aws-vmimport-policy.json
+│   └── aws-vmimport-role.json
 ├── containers
-│   ├── nginx.tar
-│   └── registry.tar
-├── kubectl
-├── oc
-├── openshift-install
+│   ├── mirror-registry.tar.gz
+│   ├── nginx.tar
+│   └── registry.tar
 ├── openshift-release-dev
-│   ├── config
-│   └── v2
+│   ├── mirror_seq1_000000.tar
+│   ├── mirror_seq1_000001.tar
+│   ├── mirror_seq1_000002.tar
+│   ├── mirror_seq1_000003.tar
+│   ├── oc-mirror-workspace
+│   └── publish
 └── rhcos-aws.x86_64.vmdk.gz
 ```
 <br />
@@ -140,5 +152,6 @@ Ansible Roles Included
 --------------
 
 * `cloud-dependencies` is the Ansible role that provides the cloud-dependencies folder, with the cloud CLI binaries and tertiary template materials as needed.
-* `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc` per the product documentation.
+* `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc-mirror` per the product documentation.
 * `rhcos-image-download` is the Ansible role that provide the appropriate RHCOS image depending on the cloud target selected. This is used to simplify/translate a simple input parameter such as `rhv, metal, aws, azure, ...` into its appropriate download link, as well as checksum validate the image file.
+* `create-ocp-bundles` this is the Ansible role that creates self extracting bundles.

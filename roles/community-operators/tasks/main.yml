@@ -1,0 +1,37 @@
+---
+# tasks file for community-operators
+- name: Parameters passed
+  ansible.builtin.debug:
+    msg: "dest: {{ dest }} operators: {{ operators }} ocp_version: {{ ocp_version }} archive_size: {{ archive_size }}"
+
+- name: "Creating {{ dest }}/operators/community directory"
+  ansible.builtin.file:
+    path: "{{ dest }}/operators/community"
+    state: directory
+
+- name: Creating oc-mirror redhat operator template
+  ansible.builtin.template:
+    src: community-operator-images.j2
+    dest: /tmp/community-operator-images.yaml
+
+- name: "Mirroring Community operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.shell: |
+    oc-mirror --config /tmp/community-operator-images.yaml file://{{ dest }}/operators/community
+  register: oc_mirror_rc
+
+- name: Copy oc-mirror config file
+  ansible.builtin.copy:
+    src: /tmp/community-operator-images.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
+
+- name: Removing temp files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /tmp/community-operator-images.yaml
+
+- name: Debug oc-mirror output
+  ansible.builtin.debug:
+    var: oc_mirror_rc

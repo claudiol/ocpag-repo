@@ -4,7 +4,7 @@
     url: "{{ cloud_targets[cloud_target] }}"
     dest: "{{ dest }}"
     mode: '0660'
-    checksum: "sha256:http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/latest/sha256sum.txt"
+    checksum: "sha256:http://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/latest/sha256sum.txt"
 
 # - name: Debug and Validate RHCOS Image Checksum
 #   debug:
