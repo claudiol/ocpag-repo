@@ -14,6 +14,8 @@ Pre-reqs
 
 * Ansible
 * Makeself - makeself.noarch
+* kubernetes.core 2.3.2  
+* python3-boto.noarch
 
 Pre-Generated Bundles
 --------------
