@@ -1,8 +1,8 @@
-- name: pretasks | Retrieving available OpenShift 4 versions
+- name: Pretasks | Retrieving available OpenShift 4 versions
   ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
   register: v4_versions
 
-- name: pretasks | Retireving available Stable OpenShift 4 versions
+- name: Pretasks | Retireving available Stable OpenShift 4 versions
   ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"stable-4" | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
   register: stable_v4_versions
 

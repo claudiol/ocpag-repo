@@ -1,6 +1,6 @@
-- name: "pretasks | Checking the destination dir [{{ destination }}]"
+- name: "pretasks | Checking the destination dir [{{ destination | default('') }}]"
   ansible.builtin.stat:
-    path: "{{ destination }}"
+    path: "{{ destination | default('/tmp')}}"
   register: destination_path
 
 - ansible.builtin.fail:

@@ -12,7 +12,7 @@ cloud_selection: aws
 #
 # Destination directory where you want all the binaries and images to be placed.
 #
-destination: /home/claudiol/work/bundle-4.11
+destination: /home/claudiol/work/bundle-4.12
 
 #
 # Platform target
@@ -22,8 +22,8 @@ desired_os_platform: linux
 #
 # Version of OpenShift needed.  Valid values are: stable-4.X or 4.X.X
 #
-#desired_ocp_version: "stable-4.12"
-desired_ocp_version: "4.11.34"
+desired_ocp_version: "stable-4.12"
+#desired_ocp_version: "4.11.34"
 
 #
 # Path to the OpenShift Pull Secret
@@ -34,7 +34,7 @@ pull_secret_path: /home/claudiol/work/oc-mirror/pull-secret.txt
 #
 # Temporary directory where self-extracting bundles will be created
 #
-bundle_destination_dir: /home/claudiol/temp-4.11
+bundle_destination_dir: /home/claudiol/temp-4.12
 
 ###################################
 # oc-mirror variables
@@ -81,7 +81,7 @@ operator_full_catalog: false
 #
 # OLM version
 #
-olm_catalog_version: "4.11"
+olm_catalog_version: "4.12"
 olm_debug: false
 
 # 
@@ -100,9 +100,9 @@ desired_redhat_operators:
 # Additional images needed
 #
 desired_redhat_operators_additional_images:
-  - name: registry.redhat.io/redhat/redhat-operator-index:v4.11
-  - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.11
-  - name: registry.redhat.io/redhat/certified-operator-index:v4.11
+  - name: registry.redhat.io/redhat/redhat-operator-index:v4.12
+  - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.12
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.12
   - name: registry.access.redhat.com/ubi8/httpd-24:1-226
   - name: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
   - name: registry.redhat.io/ansible-automation-platform-23/ee-supported-rhel8:latest
@@ -128,7 +128,7 @@ desired_community_operators:
 # Additional images needed
 #
 desired_community_operators_additional_images:
-  - name: registry.redhat.io/redhat/community-operator-index:v4.11
+  - name: registry.redhat.io/redhat/community-operator-index:v4.12
 
 
 #
@@ -143,4 +143,4 @@ desired_certified_operators: []
 # Additional images needed
 #
 desired_certified_operators_additional_images:
-  - name: registry.redhat.io/redhat/certified-operator-index:v4.11
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.12

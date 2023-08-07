@@ -1,0 +1,17 @@
+---
+- name: Generate Openshift Bundle
+  hosts: localhost
+  connection: local
+
+  pre_tasks:
+  - name: Generate | include rhoperator-facts-setup
+    ansible.builtin.import_tasks: 'playbooks/rhoperator-facts-setup.yml'
+  - name: Generate | include pretasks
+    ansible.builtin.import_tasks: 'playbooks/rhoperator-pretasks.yml'
+#  - name: Generate | include facts-setup
+#    ansible.builtin.import_tasks: 'playbooks/facts-setup.yml'
+#  - name: Generate | include pretasks
+#    vars:
+#      stable_version: false
+#    ansible.builtin.import_tasks: 'playbooks/pretasks.yml'
+#
