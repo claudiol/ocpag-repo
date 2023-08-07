@@ -12,9 +12,9 @@
 
 #- ansible.builtin.fail:
 #    msg: "pretasks | Path [{{ destination }}] does not exists. Please create the directory."
-#  when: destination_path.stat.exists == false 
+#  when: destination_path.stat.exists == false
 
-- name: "Checking space in {{ destination }} directory" 
+- name: "Checking space in {{ destination }} directory"
   ansible.builtin.debug:
     msg: "Looks like you have enough space. Available space [{{ disk_usage_s }}GiB]"
   when: 'mount_size_available is defined and disk_usage_s|int > 30'

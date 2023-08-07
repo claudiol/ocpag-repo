@@ -1,6 +1,6 @@
 ---
 - name: Download RHCOS Image
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ cloud_targets[cloud_target] }}"
     dest: "{{ dest }}"
     mode: '0660'

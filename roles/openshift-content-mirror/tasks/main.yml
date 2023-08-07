@@ -23,7 +23,7 @@
 #   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: "Download OC Binary {{ ocp_version }}"
-  get_url: 
+  ansible.builtin.get_url: 
     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/{{ os_platforms[os_platform] }}"
     dest: "/tmp/"
     mode: '0660'
@@ -31,7 +31,7 @@
   register: oc_binary_tarball
 
 - name: Extract OC Binary
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ oc_binary_tarball.dest }}"
     dest: "/tmp/"
     remote_src: yes
@@ -41,13 +41,13 @@
   ansible.builtin.stat:
     path: "{{ dest }}"
   register: dir_to_check
-    
+
 - name: "Creating {{ dest }} directory"
   ansible.builtin.file:
     path: "{{ dest }}"
     state: directory
     mode: "u=rwx,g=rx,o=rx"
-  when: dir_to_check.stat.isdir is not defined 
+  when: dir_to_check.stat.isdir is not defined
 
 
 - name: Creating bin directory
@@ -72,7 +72,7 @@
   register: openshift_content
 
 - name: Download OC-MIRROR Binary
-  ansible.builtin.get_url: 
+  ansible.builtin.get_url:
     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/oc-mirror.tar.gz"
     dest: "/tmp/"
     mode: '0660'
@@ -91,7 +91,7 @@
     src: "/tmp/{{ item }}"
     dest: "{{ dest }}/bin"
     mode: '0550'
-    remote_src: yes
+    remote_src: true
   loop:
     - oc-mirror
 
@@ -101,7 +101,7 @@
     dest: /tmp/image-config.yaml
 
 - name: "Mirroring Openshift Images for OCP Version [ {{ ocp_version }} ]"
-  ansible.builtin.shell: |
+  ansible.builtin.command: |
     {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
   register: oc_mirror_rc
 
@@ -142,7 +142,7 @@
     --command=openshift-install --to={{ dest }}/bin \
     quay.io/openshift-release-dev/ocp-release:{{ ocp_version }}-x86_64
   when: openshift_install_binary.stat.exists == false
-  changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
+  changed_when: false # stat conditional makes this idempotent, check molcule issue board for details
 
 - name: Make Container Image Subdirectory
   ansible.builtin.file:
@@ -158,7 +158,7 @@
   loop: "{{ container_files }}"
 
 - name: "Download mirror-registry Binary"
-  ansible.builtin.get_url: 
+  ansible.builtin.get_url:
     url: "https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz"
     dest: "{{ dest }}/containers/"
     mode: '0660'
@@ -169,7 +169,7 @@
   ansible.builtin.template:
     src: bundle-manifest.j2
     dest: /tmp/bundle-manifest.yaml
-  
+
 - name: Copy manifest file
   ansible.builtin.copy:
     src: /tmp/bundle-manifest.yaml
@@ -193,4 +193,3 @@
     - "{{ oc_mirror_binary_tarball.dest }}"
     - image-config.yaml
     - bundle-manifest.yaml
-
