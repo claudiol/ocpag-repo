@@ -25,9 +25,9 @@
       private: false
 
   pre_tasks:
-    - name: generate | include rhoperator-facts-setup
+    - name: Generate | include rhoperator-facts-setup
       ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-facts-setup.yml'
-    - name: generate | include pretasks
+    - name: Generate | include pretasks
       ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
 
   roles:

@@ -9,4 +9,3 @@
 # - name: Debug and Validate RHCOS Image Checksum
 #   debug:
 #     msg: "{{ downloaded_image.checksum_dest }} is the checkum dest and {{ downloaded_image.checksum_src }} is the checksum source"
-

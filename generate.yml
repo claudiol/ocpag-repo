@@ -38,7 +38,7 @@
       ansible.builtin.import_tasks: 'ansible/playbooks/facts-setup.yml'
     - name: Generate | include pretasks
       vars:
-        stable_version: false  
+        stable_version: false
       ansible.builtin.import_tasks: 'ansible/playbooks/pretasks.yml'
 
   roles:
