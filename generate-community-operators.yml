@@ -8,27 +8,27 @@
     - name: destination
       prompt: "Desired path to dump operator content content (example: /home/user1/bundle/rh-operators)"
       default: "./operators/community-operators"
-      private: no
+      private: false
 
     - name: desired_ocp_version
       prompt: "Major version of OpenShift (example: 4.10)"
       default: "4.11"
-      private: no
+      private: false
 
     - name: desired_community_operators
       prompt: "Desired Openshift community-operators "
-      private: no
+      private: false
 
     - name: desired_archive_size
       prompt: Maximum size (GiB) of each archive
       default: "4"
-      private: no
+      private: false
 
   pre_tasks:
-  - name: generate | include rhoperator-facts-setup
-    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-facts-setup.yml'
-  - name: generate | include pretasks
-    ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
+    - name: generate | include rhoperator-facts-setup
+      ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-facts-setup.yml'
+    - name: generate | include pretasks
+      ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
 
   roles:
     - role: community-operators

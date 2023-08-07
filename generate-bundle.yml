@@ -7,10 +7,10 @@
     - name: destination
       prompt: "Enter source bundle dir:  "
       default: "~/work/bundle"
-      private: no
+      private: false
 
   roles:
-    - role: create-ocp-bundles 
+    - role: create-ocp-bundles
       vars:
         source_bundle_dir: "{{ destination }}"
         cloud_target: "{{ cloud_selection }}"

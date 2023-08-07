@@ -7,39 +7,39 @@
 
     - name: destination
       prompt: "Desired path to dump content (example: /home/user1/bundle)"
-      private: no
+      private: false
 
     - name: cloud_selection
       prompt: Cloud to generate content for (aws,gcp,azure,metal,rhv,vmware,openstack)
       default: "aws"
-      private: no
+      private: false
 
     - name: pull_secret_path
       prompt: "Path to your Pull Secret file (example: /home/user1/pull_secret.txt)"
-      private: no
+      private: false
 
     - name: desired_os_platform
       prompt: Desired Operating System Platform for execution (linux,macos,windows)
       default: "linux"
-      private: no
+      private: false
 
     - name: desired_ocp_version
       prompt: Desired Openshift Version
       default: "4.6.8"
-      private: no
+      private: false
 
     - name: desired_archive_size
       prompt: Maximum size (GiB) of each archive
       default: "4"
-      private: no
+      private: false
 
   pre_tasks:
-  - name: generate | include facts-setup
-    ansible.builtin.import_tasks: 'ansible/playbooks/facts-setup.yml'
-  - name: generate | include pretasks
-    vars:
-      stable_version: false  
-    ansible.builtin.import_tasks: 'ansible/playbooks/pretasks.yml'
+    - name: Generate | include facts-setup
+      ansible.builtin.import_tasks: 'ansible/playbooks/facts-setup.yml'
+    - name: Generate | include pretasks
+      vars:
+        stable_version: false  
+      ansible.builtin.import_tasks: 'ansible/playbooks/pretasks.yml'
 
   roles:
     - role: rhcos-image-download
