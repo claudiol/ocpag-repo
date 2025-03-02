@@ -3,7 +3,7 @@
 # within a specified operator catalog
 {% if operators %}
 ---
-apiVersion: mirror.openshift.io/v1alpha2
+apiVersion: mirror.openshift.io/v2alpha1
 kind: ImageSetConfiguration
 archiveSize: {{ archive_size }}
 mirror:
@@ -12,8 +12,6 @@ mirror:
       packages:
 {% for operator in desired_community_operators %}
         - name: {{ operator.name }} 
-          channels: 
-          - name: {{ operator.channel }}
 {% endfor %}
 {% if desired_community_operators_additional_images %}
   additionalImages:
