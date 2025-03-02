@@ -34,11 +34,12 @@
   
 - name: "Pretasks | Checking ocp_version"
   ansible.builtin.debug:
-    msg: "pretasks | Desired OpenShift version: {{ desired_ocp_version }}"
+    msg: "Pretasks | Desired OpenShift version: {{ desired_ocp_version }}"
   register: version_check
   when: 'stable_version == false and "stable" not in desired_ocp_version and (desired_ocp_version.split(".") | length) > 2'
 
-- debug:
+- name: "Pretasks | Version Check Variable"
+  debug:
     var: version_check
     
 - ansible.builtin.fail: 
@@ -52,7 +53,8 @@
   register: v4_result
   when: 'stable_version == false and desired_ocp_version|string in v4_versions.stdout'
 
-- debug:
+- name: "Pretasks | List of stable v4 versions"
+  debug:
     var: stable_v4_versions
 
 - name: Pretasks | Checking Stable OpenShift 4 version
@@ -60,6 +62,9 @@
     msg: "pretasks | Version {{ desired_ocp_version }} is valid"
   register: stable_result
   when: 'stable_version == true and desired_ocp_version|string in stable_v4_versions.stdout'
+
+- ansible.builtin.debug:
+    msg: " 0 ==== {{ stable_version }} === {{ desired_ocp_version }}"
 
 - name: Pretasks | Getting version for Stable OpenShift 4
   ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }} | grep 'href=\"openshift-client-linux-4' | cut -d '=' -f 2 | tr -d '"' | sed "s|>||g" | sed "s|openshift-client-linux-||g" | sed "s|.tar.gz||g"
@@ -72,12 +77,18 @@
     - stable_version == false and v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
     - stable_version == true and stable_result.skip_reason is defined and stable_result.skip_reason == "Conditional result was False"
 
+- ansible.builtin.debug:
+    msg: " 1 ==== {{ stable_version }} === {{ stable_v4_versions }} ===="
+
 - ansible.builtin.set_fact:
     ocpMinVersion: "{{ stable_v4_version.stdout }}"
     ocpMaxVersion: "{{ stable_v4_version.stdout }}"
     ocpMajMinVersion: "{{ stable_v4_version.stdout.split('.')[0] }}.{{ stable_v4_version.stdout.split('.')[1] }}"
     ocp_version: "{{ stable_v4_version.stdout }}"
   when: stable_version == true
+
+- ansible.builtin.debug:
+    msg: " 2 ==== {{ stable_version }} ===="
 
 - ansible.builtin.set_fact:
     ocpMinVersion: "{{ desired_ocp_version }}"

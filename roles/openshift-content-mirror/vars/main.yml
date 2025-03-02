@@ -8,3 +8,4 @@ os_platforms:
 container_files:
   - https://openshift-packages.s3.us-west-2.amazonaws.com/containers/nginx.tar
   - https://openshift-packages.s3.us-west-2.amazonaws.com/containers/registry.tar
+

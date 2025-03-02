@@ -2,7 +2,7 @@
 #
 
 BUNDLEDIR=""
-TEMPDIR="/home/claudiol/temp"
+TEMPDIR="/tmp"
 
 # Function log
 # Arguments:

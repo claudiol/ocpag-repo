@@ -24,10 +24,10 @@
 
 - name: "Download OC Binary {{ ocp_version }}"
   ansible.builtin.get_url: 
-    url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/{{ os_platforms[os_platform] }}"
+    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }}/{{ os_platforms[os_platform] }}"
     dest: "/tmp/"
     mode: '0660'
-    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ ocp_version }}/sha256sum.txt"
+      #checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }}/sha256sum.txt"
   register: oc_binary_tarball
 
 - name: Extract OC Binary
@@ -76,7 +76,7 @@
     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/oc-mirror.tar.gz"
     dest: "/tmp/"
     mode: '0660'
-#    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
+    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
   register: oc_mirror_binary_tarball
 
 - name: Extract OC-MIRROR Binary
@@ -95,15 +95,29 @@
   loop:
     - oc-mirror
 
-- name: Creating oc-mirror template
+- name: Creating oc-mirror V2 template
   ansible.builtin.template:
-    src: image-config.j2
+    src: image-config-v2.j2
     dest: /tmp/image-config.yaml
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
 
-- name: "Mirroring Openshift Images for OCP Version [ {{ ocp_version }} ]"
+- name: Creating oc-mirror V1 template
+  ansible.builtin.template:
+    src: image-config-v1.j2
+    dest: /tmp/image-config.yaml
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
+
+- name: "OC-MIRROR V2 Mirroring Openshift Images for OCP Version [ {{ desired_ocp_version }} ]"
+  ansible.builtin.command: |
+    {{ dest }}/bin/oc-mirror --v2 --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
+  register: oc_mirror_rc
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
+
+- name: "OC-MIRROR V1 Mirroring Openshift Images for OCP Version [ {{ desired_ocp_version }} ]"
   ansible.builtin.command: |
     {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
   register: oc_mirror_rc
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
 
 - name: Debug oc-mirror output
   ansible.builtin.debug:
@@ -159,10 +173,10 @@
 
 - name: "Download mirror-registry Binary"
   ansible.builtin.get_url:
-    url: "https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz"
+    url: "{{ mirror_registry.url }}/mirror-registry.tar.gz"
     dest: "{{ dest }}/containers/"
     mode: '0660'
-    checksum: "sha256:https://developers.redhat.com/content-gateway/rest/mirror2/pub/openshift-v4/clients/mirror-registry/latest/sha256sum.txt"
+    checksum: "sha256:{{ mirror_registry.url }}/sha256sum.txt"
   register: mirror_registry_binary_tarball
 
 - name: "Creating bundle manifest file"

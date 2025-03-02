@@ -1,6 +1,7 @@
 # This config uses the headsOnly feature which will mirror the
 # latest version of each channel within each package contained
 # within a specified operator catalog
+{% if oc_mirror_version == "v1" %}
 {% if operators %}
 ---
 apiVersion: mirror.openshift.io/v1alpha2
@@ -28,4 +29,4 @@ storageConfig:
   local:
     path: {{ destination }}/operators/redhat
 {% endif %}
-
+{% endif %}
