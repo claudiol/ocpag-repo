@@ -12,7 +12,7 @@
 
     - name: desired_ocp_version
       prompt: "Major version of OpenShift (example: 4.10)"
-      default: "4.11"
+      default: "4.18"
       private: false
 
     - name: desired_community_operators

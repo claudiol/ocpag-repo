@@ -1,0 +1,53 @@
+# This config uses the headsOnly feature which will mirror the
+# latest version of each channel within each package contained
+# within a specified operator catalog
+---
+#apiVersion: mirror.openshift.io/v1alpha2
+#kind: ImageSetConfiguration
+#mirror:
+#  operators:
+#    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.11
+#    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.10
+apiVersion: mirror.openshift.io/v1alpha2
+kind: ImageSetConfiguration
+archiveSize: 4
+mirror:
+  operators:
+    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.11
+      packages:
+        - name: advanced-cluster-management
+          channels: 
+          - name: release-2.6
+        - name: openshift-pipelines-operator-rh
+          channels: 
+          - name: pipelines-1.8
+        - name: amq-streams
+          channels: 
+          - name: stable
+        - name: amq-broker-rhel8
+          channels: 
+          - name: 7.10.x
+        - name: red-hat-camel-k
+          channels: 
+          - name: 1.8.x
+        #- name: jaegar-product
+          #channels: 
+          #- name: stable
+        - name: elasticsearch-operator
+          channels: 
+          - name: stable
+        - name: kiali-ossm
+          channels: 
+          - name: stable
+#        - name: servicemeshoperator
+#          channels: 
+#          - name: stable
+        - name: rhacs-operator
+          channels: 
+          - name: latest
+        - name: rhsso-operator
+          channels: 
+          - name: stable
+storageConfig:
+  local:
+    path: /home/claudiol/work/bundle/operators 
