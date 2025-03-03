@@ -73,10 +73,9 @@
 
 - name: Download OC-MIRROR Binary
   ansible.builtin.get_url:
-    url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/oc-mirror.tar.gz"
+    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }}/oc-mirror.tar.gz"
     dest: "/tmp/"
     mode: '0660'
-    checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
   register: oc_mirror_binary_tarball
 
 - name: Extract OC-MIRROR Binary
