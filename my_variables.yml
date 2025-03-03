@@ -24,7 +24,7 @@ desired_os_platform: linux
 #
 desired_ocp_version: "4.18.1"
 ocp_version: "4.18.1"
-oc_mirror_version: "v2"
+oc_mirror_version: "v1"
 openshift_graph: true
 mirror_registry:
   url: https://mirror.openshift.com/pub/openshift-v4/clients/mirror-registry/1.3.10/ 
@@ -53,7 +53,7 @@ desired_archive_size: 4
 #
 # Whether you want the full channel or not
 #
-openshift_full_channel: false
+openshift_full_channel: true
 
 #
 # Minimal version for OpenShift
