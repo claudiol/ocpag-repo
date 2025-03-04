@@ -12,7 +12,7 @@ cloud_selection: metal
 #
 # Destination directory where you want all the binaries and images to be placed.
 #
-destination: /home/rocky/work/bundle-4.18
+destination: /home/rocky/work/bundle-4.17
 
 #
 # Platform target
@@ -22,8 +22,8 @@ desired_os_platform: linux
 #
 # Version of OpenShift needed.  Valid values are: stable-4.X or 4.X.X
 #
-desired_ocp_version: "4.18.1"
-ocp_version: "4.18.1"
+desired_ocp_version: "4.17.19"
+ocp_version: "4.17.19"
 oc_mirror_version: "v1"
 openshift_graph: true
 mirror_registry:
@@ -39,7 +39,7 @@ pull_secret_path: /home/rocky/.pullsecret.json
 #
 # Temporary directory where self-extracting bundles will be created
 #
-bundle_destination_dir: /home/rocky/bundles-4.18
+bundle_destination_dir: /home/rocky/bundles-4.17
 
 ###################################
 # oc-mirror variables
@@ -86,7 +86,7 @@ operator_full_catalog: false
 #
 # OLM version
 #
-olm_catalog_version: "4.18"
+olm_catalog_version: "4.17"
 olm_debug: false
 
 # 
@@ -97,7 +97,7 @@ olm_debug: false
 #
 desired_redhat_operators: 
   - name: advanced-cluster-management
-    channel: release-2.12
+    channel: release-2.7
   - name: openshift-gitops-operator
     channel: latest
 
@@ -105,11 +105,11 @@ desired_redhat_operators:
 # Additional images needed
 #
 desired_redhat_operators_additional_images:
-  - name: registry.redhat.io/redhat/redhat-operator-index:v4.18
-  - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.18
-  - name: registry.redhat.io/redhat/certified-operator-index:v4.18
+  - name: registry.redhat.io/redhat/redhat-operator-index:v4.17
+  - name: registry.redhat.io/redhat/redhat-marketplace-index:v4.17
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.17
   - name: registry.access.redhat.com/ubi8/httpd-24:1-226
-  - name: registry.connect.redhat.com/hashicorp/vault:1.18.5-ubi
+  - name: registry.connect.redhat.com/hashicorp/vault:1.12.1-ubi
   - name: registry.redhat.io/ansible-automation-platform-23/ee-supported-rhel8:latest
   - name: ghcr.io/external-secrets/external-secrets:v0.8.1-ubi
   - name: registry.access.redhat.com/ubi8/ubi-minimal:latest
@@ -133,7 +133,7 @@ desired_community_operators:
 # Additional images needed
 #
 desired_community_operators_additional_images:
-  - name: registry.redhat.io/redhat/community-operator-index:v4.18
+  - name: registry.redhat.io/redhat/community-operator-index:v4.17
 
 
 #
@@ -141,11 +141,11 @@ desired_community_operators_additional_images:
 # Operators from the certified-operators catalog
 #
 # To list community operators you can run:
-# oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.18
+# oc-mirror list operators --catalog registry.redhat.io/redhat/community-operator-index:v4.17
 desired_certified_operators: []
 
 #
 # Additional images needed
 #
 desired_certified_operators_additional_images:
-  - name: registry.redhat.io/redhat/certified-operator-index:v4.18
+  - name: registry.redhat.io/redhat/certified-operator-index:v4.17
