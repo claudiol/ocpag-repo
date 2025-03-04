@@ -9,15 +9,31 @@
     path: "{{ dest }}/operators/community"
     state: directory
 
-- name: Creating oc-mirror redhat operator template
+- name: Creating oc-mirror V1 redhat operator template
   ansible.builtin.template:
-    src: community-operator-images.j2
+    src: community-operator-images-v1.j2
     dest: /tmp/community-operator-images.yaml
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
 
-- name: "Mirroring Community operator Images for OCP Version [ {{ ocp_version }} ]"
+- name: Creating oc-mirror V2 redhat operator template
+  ansible.builtin.template:
+    src: community-operator-images-v2.j2
+    dest: /tmp/community-operator-images.yaml
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
+
+  # TODO: We don't need two separate tasks for this. All we need is a variable
+  # for the --v2 option. Please change in all oc-mirror tasks. LRC
+- name: "OC-MIRROR V1 Mirroring Community operator Images for OCP Version [ {{ ocp_version }} ]"
   ansible.builtin.shell: |
     oc-mirror --config /tmp/community-operator-images.yaml file://{{ dest }}/operators/community
   register: oc_mirror_rc
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
+
+- name: "OC-MIRROR V2 Mirroring Community operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.shell: |
+    oc-mirror --v2 --config /tmp/community-operator-images.yaml file://{{ dest }}/operators/community
+  register: oc_mirror_rc
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
 
 - name: Copy oc-mirror config file
   ansible.builtin.copy:

@@ -53,7 +53,7 @@ desired_archive_size: 4
 #
 # Whether you want the full channel or not
 #
-openshift_full_channel: true
+openshift_full_channel: false
 
 #
 # Minimal version for OpenShift
