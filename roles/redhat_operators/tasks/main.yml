@@ -12,17 +12,29 @@
 
 - name: Creating oc-mirror redhat operator template
   ansible.builtin.template:
-    src: redhat-operator-images.j2
+    src: redhat-operator-images-v1.j2
     dest: /tmp/redhat-operator-images.yaml
-    mode: '0644'
-    register: output
-    changed_when: output.rc != 0
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
 
-- name: "Mirroring Red Hat operator Images for OCP Version [ {{ ocp_version }} ]"
+- name: Creating oc-mirror redhat operator template
+  ansible.builtin.template:
+    src: redhat-operator-images-v2.j2
+    dest: /tmp/redhat-operator-images.yaml
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
+
+- name: "V1 Mirroring Red Hat operator Images for OCP Version [ {{ ocp_version }} ]"
   ansible.builtin.command: |
     oc-mirror --config /tmp/redhat-operator-images.yaml file://{{ dest }}/operators/redhat
   register: oc_mirror_rc
   changed_when: oc_mirror_rc.rc != 0
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
+
+- name: "V2 Mirroring Red Hat operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.command: |
+    oc-mirror --v2 --config /tmp/redhat-operator-images.yaml file://{{ dest }}/operators/redhat
+  register: oc_mirror_rc
+  changed_when: oc_mirror_rc.rc != 0
+  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
 
 - name: Copy oc-mirror config file
   ansible.builtin.copy:

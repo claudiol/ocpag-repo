@@ -32,7 +32,7 @@
       ansible.builtin.import_tasks: 'ansible/playbooks/rhoperator-pretasks.yml'
 
   roles:
-    - role: redhat-operators
+    - role: redhat_operators
       vars:
         dest: "{{ destination }}"
         operators: "[{{ desired_redhat_operators }}]"
