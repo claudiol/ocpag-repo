@@ -2,7 +2,8 @@
 - name: Generate Openshift Bundle
   hosts: localhost
   connection: local
-
+  vars_files:
+    - vars/ocp_dependencies.yaml
   vars_prompt:
     - name: destination
       prompt: "Enter source bundle dir:  "

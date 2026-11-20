@@ -1,7 +1,7 @@
 # This config uses the headsOnly feature which will mirror the
 # latest version of each channel within each package contained
 # within a specified operator catalog
-{% if oc_mirror_version == "v1" %}
+{% if oc_mirror_config.api_version == "v2" %}
 {% if operators %}
 ---
 apiVersion: mirror.openshift.io/v2alpha1
@@ -10,9 +10,6 @@ archiveSize: {{ archive_size }}
 mirror:
   operators:
     - catalog: registry.redhat.io/redhat/redhat-operator-index:v{{ olm_catalog_version }}
-{% if operator_full_catalog %}
-        full: true
-{% endif %}
       packages:
 {% for operator in desired_redhat_operators %}
         - name: {{ operator.name }} 
@@ -23,8 +20,5 @@ mirror:
     - name: {{ additionalimages.name }}
 {% endfor %}
 {% endif %}
-storageConfig:
-  local:
-    path: {{ destination }}/operators/redhat
 {% endif %}
 {% endif %}

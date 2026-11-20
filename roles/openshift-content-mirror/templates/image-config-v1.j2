@@ -26,6 +26,13 @@ mirror:
 {% endif %}
 {% endif %}
 {% endif %}
+{% if oc_mirror_config.storage.registry.enabled | default(false) and (oc_mirror_config.storage.registry.url | default('')) %}
+storageConfig:
+  registry:
+    imageURL: {{ oc_mirror_config.storage.registry.url }}
+    skipTLS: true
+{% else %}
 storageConfig:
   local:
     path: {{ destination }}/openshift-release-dev
+{% endif %}

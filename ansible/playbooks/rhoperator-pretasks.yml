@@ -41,4 +41,3 @@
 - ansible.builtin.debug:
     var: desired_redhat_operators
   when: olm_debug == true
-

@@ -28,3 +28,6 @@
 - name: Create Self-Extracting Community Operator bundle
   ansible.builtin.command: "{{ role_path }}/build/create-community-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
   register: r_community_operator_distro
+- name: Create Self-Extracting Certified Operator bundle
+  ansible.builtin.command: "{{ role_path }}/build/create-certified-operator-distro.sh -d {{ source_bundle_dir }} -r {{ role_path }} -t {{ bundle_destination_dir }}"
+  register: r_certified_operator_distro

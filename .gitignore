@@ -1,1 +1,8 @@
 gh_actions_variables.yml
+.oc-mirror.log
+.vscode/
+.ansible/
+.env
+*.pem
+*.key
+pull-secret.txt
