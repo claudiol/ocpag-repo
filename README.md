@@ -1,6 +1,9 @@
 Openshift 4 Offline Bundle Generation Tool
 =========
 
+[![Ansible](https://img.shields.io/github/actions/workflow/status/claudiol/ocpag-repo/ci.yml?branch=main&job=ansible&label=Ansible)](https://github.com/claudiol/ocpag-repo/actions/workflows/ci.yml)
+[![Secrets](https://img.shields.io/github/actions/workflow/status/claudiol/ocpag-repo/ci.yml?branch=main&job=secrets&label=Secrets)](https://github.com/claudiol/ocpag-repo/actions/workflows/ci.yml)
+
 Generates an Openshift dependency bundle for desired cloud, execution platform, and latest version. This is used to aggregate dependencies from all of the various Red Hat official resources. You choose how to compress/package the directory contents.
 
 This tool does not create the tarball for you, but pre-baked packages are available below if you do not wish to execute your own.
@@ -8,6 +11,13 @@ This tool does not create the tarball for you, but pre-baked packages are availa
 This tool will not assume simultaneous contiguous access to a destination image repository. This tool is used to produce local disk content only.
 
 This tool will not create or fill an image registry for you.
+
+Continuous integration
+--------------
+
+A push or a pull request runs the Ansible job and the secret scan together. A newer push to the same branch cancels the run already in progress. A pull request to a public repository also gets a dependency review. Renovate runs every Monday at 12:00 UTC, and it can be started from the Actions tab.
+
+The Ansible job installs `requirements.txt`, writes a CycloneDX SBOM, syntax-checks the playbooks, and runs `ansible-lint` and `yamllint`. Grype reports the SBOM and uploads it with the report. The secret scan is Gitleaks across the git history. `.env`, `pull-secret.txt`, and `gh_actions_variables.yml` must stay untracked.
 
 Pre-reqs
 --------------

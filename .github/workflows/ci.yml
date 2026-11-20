@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - run: pip install -r requirements.txt
+      - run: mkdir -p reports && pip freeze > reports/requirements.lock
+      - run: pip install -r requirements-dev.txt "cyclonedx-bom==7.5.0"
+      - run: cyclonedx-py requirements reports/requirements.lock --output-file reports/sbom.cdx.json --output-reproducible
+      - name: Syntax-check playbooks
+        run: |
+          for playbook in \
+            generate.yml \
+            generate-bundle.yml \
+            generate-certified-operators.yml \
+            generate-community-operators.yml \
+            generate-rh-operators.yml \
+            ansible/site.yml
+          do
+            ansible-playbook --syntax-check "$playbook"
+          done
+      - name: ansible-lint
+        run: |
+          ansible-lint --offline \
+            generate.yml \
+            generate-bundle.yml \
+            generate-certified-operators.yml \
+            generate-community-operators.yml \
+            generate-rh-operators.yml \
+            ansible/site.yml \
+            roles
+      - name: yamllint
+        run: yamllint .
+      - name: Shell syntax
+        run: |
+          bash -n create-bundle.sh
+          find scripts roles/create-ocp-bundles/build -name '*.sh' -exec bash -n {} +
+      - name: Grype report
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSfL https://github.com/anchore/grype/releases/download/v0.121.0/grype_0.121.0_linux_amd64.tar.gz | tar -xz -C "$HOME/.local/bin" grype
+          "$HOME/.local/bin/grype" "sbom:reports/sbom.cdx.json" -o table
+          "$HOME/.local/bin/grype" "sbom:reports/sbom.cdx.json" -o json --file reports/grype.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ansible-supply-chain
+          path: |
+            reports/sbom.cdx.json
+            reports/grype.json
+          if-no-files-found: error
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Gitleaks
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz | tar -xz -C "$HOME/.local/bin" gitleaks
+          "$HOME/.local/bin/gitleaks" detect --source . --redact --exit-code 1
+      - name: Local credential files stay untracked
+        run: |
+          tracked=$(git ls-files -- .env pull-secret.txt gh_actions_variables.yml)
+          if [ -n "$tracked" ]; then
+            echo "These credential files are tracked:"
+            printf '%s\n' "$tracked"
+            exit 1
+          fi
+
+  dependency-review:
+    # This action requires GitHub Advanced Security on a private repository.
+    # That feature is not available for this account, and the action fails
+    # before it reviews dependencies. Public repositories still run the job.
+    if: github.event_name == 'pull_request' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/dependency-review-action@v5.0.0

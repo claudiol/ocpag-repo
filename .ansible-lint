@@ -1,0 +1,7 @@
+---
+profile: min
+offline: true
+exclude_paths:
+  - .github/
+  - reports/
+  - .venv/
