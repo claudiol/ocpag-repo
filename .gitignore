@@ -2,7 +2,6 @@ gh_actions_variables.yml
 .oc-mirror.log
 .vscode/
 .ansible/
-reports/
 .env
 *.pem
 *.key

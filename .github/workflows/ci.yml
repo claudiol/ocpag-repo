@@ -24,9 +24,7 @@ jobs:
             requirements.txt
             requirements-dev.txt
       - run: pip install -r requirements.txt
-      - run: mkdir -p reports && pip freeze > reports/requirements.lock
-      - run: pip install -r requirements-dev.txt "cyclonedx-bom==7.5.0"
-      - run: cyclonedx-py requirements reports/requirements.lock --output-file reports/sbom.cdx.json --output-reproducible
+      - run: pip install -r requirements-dev.txt
       - name: Install Ansible collections
         run: ansible-galaxy collection install containers.podman:1.20.2
       - name: Syntax-check playbooks
@@ -57,19 +55,6 @@ jobs:
         run: |
           bash -n create-bundle.sh
           find scripts roles/create-ocp-bundles/build -name '*.sh' -exec bash -n {} +
-      - name: Grype report
-        run: |
-          mkdir -p "$HOME/.local/bin"
-          curl -sSfL https://github.com/anchore/grype/releases/download/v0.121.0/grype_0.121.0_linux_amd64.tar.gz | tar -xz -C "$HOME/.local/bin" grype
-          "$HOME/.local/bin/grype" "sbom:reports/sbom.cdx.json" -o table
-          "$HOME/.local/bin/grype" "sbom:reports/sbom.cdx.json" -o json --file reports/grype.json
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ansible-supply-chain
-          path: |
-            reports/sbom.cdx.json
-            reports/grype.json
-          if-no-files-found: error
 
   secrets:
     runs-on: ubuntu-latest
