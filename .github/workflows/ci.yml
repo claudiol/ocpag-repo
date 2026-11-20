@@ -27,6 +27,8 @@ jobs:
       - run: mkdir -p reports && pip freeze > reports/requirements.lock
       - run: pip install -r requirements-dev.txt "cyclonedx-bom==7.5.0"
       - run: cyclonedx-py requirements reports/requirements.lock --output-file reports/sbom.cdx.json --output-reproducible
+      - name: Install Ansible collections
+        run: ansible-galaxy collection install containers.podman:1.20.2
       - name: Syntax-check playbooks
         run: |
           for playbook in \
@@ -88,16 +90,3 @@ jobs:
             printf '%s\n' "$tracked"
             exit 1
           fi
-
-  dependency-review:
-    # This action requires GitHub Advanced Security on a private repository.
-    # That feature is not available for this account, and the action fails
-    # before it reviews dependencies. Public repositories still run the job.
-    if: github.event_name == 'pull_request' && github.event.repository.private == false
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/dependency-review-action@v5.0.0

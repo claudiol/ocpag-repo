@@ -15,7 +15,7 @@ This tool will not create or fill an image registry for you.
 Continuous integration
 --------------
 
-A push or a pull request runs the Ansible job and the secret scan together. A newer push to the same branch cancels the run already in progress. A pull request to a public repository also gets a dependency review. Renovate runs every Monday at 12:00 UTC, and it can be started from the Actions tab.
+A push or a pull request runs the Ansible job and the secret scan together. A newer push to the same branch cancels the run already in progress. Renovate runs every Monday at 12:00 UTC, and it can be started from the Actions tab.
 
 The Ansible job installs `requirements.txt`, writes a CycloneDX SBOM, syntax-checks the playbooks, and runs `ansible-lint` and `yamllint`. Grype reports the SBOM and uploads it with the report. The secret scan is Gitleaks across the git history. `.env`, `pull-secret.txt`, and `gh_actions_variables.yml` must stay untracked.
 
@@ -26,7 +26,7 @@ Pre-reqs
 * Makeself - makeself.noarch
 * kubernetes.core 2.3.2  
 * python3-boto.noarch
-* containers.podman collection, only when `container_images_download` is true
+* containers.podman collection, only when `container_images_download` is true. Syntax-check still needs it installed.
 
 Pre-Generated Bundles
 --------------
