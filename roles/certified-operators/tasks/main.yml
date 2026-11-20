@@ -1,0 +1,59 @@
+---
+# tasks file for certified-operators
+- name: Parameters passed
+  ansible.builtin.debug:
+    msg: "dest: {{ dest }} operators: {{ operators }} ocp_version: {{ ocp_version }} archive_size: {{ archive_size }}"
+
+- name: Creating cache directory
+  ansible.builtin.file:
+    path: "{{ dest }}/cache"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+
+- name: "Creating {{ dest }}/operators/certified directory"
+  ansible.builtin.file:
+    path: "{{ dest }}/operators/certified"
+    state: directory
+
+- name: Creating oc-mirror V1 certified operator template
+  ansible.builtin.template:
+    src: certified-operator-images-v1.j2
+    dest: /tmp/certified-operator-images.yaml
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v1"'
+
+- name: Creating oc-mirror V2 certified operator template
+  ansible.builtin.template:
+    src: certified-operator-images-v2.j2
+    dest: /tmp/certified-operator-images.yaml
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v2"'
+
+  # TODO: We don't need two separate tasks for this. All we need is a variable
+  # for the --v2 option. Please change in all oc-mirror tasks. LRC
+- name: "OC-MIRROR V1 Mirroring Certified operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.shell: |
+    oc-mirror --config /tmp/certified-operator-images.yaml file://{{ dest }}/operators/certified
+  register: oc_mirror_rc
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v1"'
+
+- name: "OC-MIRROR V2 Mirroring Certified operator Images for OCP Version [ {{ ocp_version }} ]"
+  ansible.builtin.shell: |
+    {{ dest }}/bin/oc-mirror --cache-dir {{ oc_mirror_config.cache_dir }}  --v2 --config /tmp/certified-operator-images.yaml file://{{ dest }}/operators/certified --authfile {{ oc_mirror_config.authfile }}
+  register: oc_mirror_rc
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v2"'
+
+- name: Copy oc-mirror config file
+  ansible.builtin.copy:
+    src: /tmp/certified-operator-images.yaml
+    dest: "{{ dest }}/bin"
+    mode: '0644'
+
+- name: Removing temp files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /tmp/certified-operator-images.yaml
+
+- name: Debug oc-mirror output
+  ansible.builtin.debug:
+    var: oc_mirror_rc

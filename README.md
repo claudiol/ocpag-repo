@@ -16,6 +16,7 @@ Pre-reqs
 * Makeself - makeself.noarch
 * kubernetes.core 2.3.2  
 * python3-boto.noarch
+* containers.podman collection, only when `container_images_download` is true
 
 Pre-Generated Bundles
 --------------
@@ -55,6 +56,10 @@ There is an example yaml file under examples/my_variables.yaml that you can use.
 | **desired_redhat_operators_additional_images** || List of additional images | *name* - Name of additional image |
 | **desired_community_operators** || List of Community Operators to be mirrored ||
 | **desired_community_operators_additional_images** || List of additional images | *name* - Name of additional image |
+| **desired_certified_operators** || List of certified operators to be mirrored | *name* - name of operator, *channel* - channel for operator |
+| **desired_certified_operators_additional_images** || List of additional images | *name* - Name of additional image |
+| **oc_mirror_config** || oc-mirror settings. `api_version` is `v1` or `v2`. `cache_dir` and `authfile` are used by v2. `storage.local` or `storage.registry` selects where v1 metadata is written. `push.registry` and `push.repository_prefix` are read by `scripts/mirror-to-registry.sh`. ||
+| **container_images_download** (*bool*) || When true, save listed container images with podman into the bundle | false |
 
 <br />
 
@@ -95,6 +100,17 @@ desired_os_platform: linux
 #
 #desired_ocp_version: "stable-4.12"
 desired_ocp_version: "4.11.34"
+container_images_download: false
+
+oc_mirror_config:
+  api_version: "v1"
+  cache_dir: /home/claudiol/work/bundle/cache
+  authfile: ~/.docker/config.json
+  storage:
+    local:
+      enabled: true
+    registry:
+      enabled: false
 
 #
 # Path to the OpenShift Pull Secret
@@ -225,11 +241,21 @@ ansible-playbook generate.yml --extra-vars "@my_variables.yml"
 **Alternative**: Run the playbook as needed, and provide the inputs to the prompts. This is preferred for direct or manual use as a field tool with no preparation.
 
 ```
-➜  $ ./create-bundle.sh                                                                                                                
-Generating OpenShift images ... done                                                                                                      
-Generating Red Hat OpenShift operators ... done                                                                                           
-Generating Community OpenShift operators ... done                                                                                         
+➜  $ ./create-bundle.sh my_variables.yml
+Generating OpenShift images ... done
+Generating Red Hat OpenShift operators ... done
+Generating Community OpenShift operators ... done
+Generating Certified OpenShift operators ... done
 Generating OpenShift self-extracting bundles ... done  
+```
+
+<br />
+
+Publish the disk mirror to a registry with `scripts/mirror-to-registry.sh`. Log in to that registry first so `oc_mirror_config.authfile` can authenticate. The release catalog is pushed with `--parallel-images` and `--parallel-layers` (default 1). Operator catalogs are not throttled. Catalogs missing from the bundle are skipped.
+
+```
+./scripts/mirror-to-registry.sh --vars my_variables.yml
+./scripts/mirror-to-registry.sh --vars my_variables.yml --only release
 ```
 
 <br />
@@ -333,3 +359,4 @@ Ansible Roles Included
 * `openshift-content-mirror` is the Ansible role that provides the core Openshift 4 mirror via the `openshift-release-dev` folder seen in this bundle example, which is 1 for 1 what is pulled directly from Quay and the Red Hat Registry when using `oc-mirror` per the product documentation.
 * `rhcos-image-download` is the Ansible role that provide the appropriate RHCOS image depending on the cloud target selected. This is used to simplify/translate a simple input parameter such as `rhv, metal, aws, azure, ...` into its appropriate download link, as well as checksum validate the image file.
 * `create-ocp-bundles` this is the Ansible role that creates self extracting bundles.
+* `redhat_operators`, `community-operators`, and `certified-operators` mirror the selected operator catalogs with oc-mirror.

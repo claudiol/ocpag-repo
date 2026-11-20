@@ -1,5 +1,5 @@
 - name: pretasks | Retrieving available OpenShift 4 versions
-  # ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
+  # ansible.builtin.shell: curl -s -L {{ ocp_client_download_url }} | grep "href=\"4." | cut -d '=' -f 2 | tr -d '"' | sed "s|/>||g"
   ansible.builtin.shell: oc-mirror list releases | grep -v Available
   register: olm_v4_versions
 

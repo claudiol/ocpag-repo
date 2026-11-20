@@ -5,7 +5,7 @@
 
 # - name: Download OC Checksum File
 #   get_url:
-#     url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest/sha256sum.txt"
+#     url: "{{ openshift_content_mirror_ocp_client_download_url }}/latest/sha256sum.txt"
 #     dest: "{{ dest }}/sha256sum.txt"
 #     mode: '0440'
 #   register: checksum_file
@@ -23,11 +23,11 @@
 #   changed_when: false #stat conditional makes this idempotent, check molcule issue board for details
 
 - name: "Download OC Binary {{ ocp_version }}"
-  ansible.builtin.get_url: 
-    url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }}/{{ os_platforms[os_platform] }}"
+  ansible.builtin.get_url:
+    url: "{{ openshift_content_mirror_ocp_client_download_url }}/{{ desired_ocp_version }}/{{ os_platforms[os_platform] }}"
     dest: "/tmp/"
     mode: '0660'
-      #checksum: "sha256:https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }}/sha256sum.txt"
+      #checksum: "sha256:{{ openshift_content_mirror_ocp_client_download_url }}/{{ desired_ocp_version }}/sha256sum.txt"
   register: oc_binary_tarball
 
 - name: Extract OC Binary
@@ -50,6 +50,12 @@
   when: dir_to_check.stat.isdir is not defined
 
 
+- name: Creating cache directory
+  ansible.builtin.file:
+    path: "{{ dest }}/cache"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+      
 - name: Creating bin directory
   ansible.builtin.file:
     path: "{{ dest }}/bin"
@@ -98,30 +104,35 @@
   ansible.builtin.template:
     src: image-config-v2.j2
     dest: /tmp/image-config.yaml
-  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v2"'
 
 - name: Creating oc-mirror V1 template
   ansible.builtin.template:
     src: image-config-v1.j2
     dest: /tmp/image-config.yaml
-  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v1"'
+
+- name: DEBUG
+  ansible.builtin.debug:
+    msg: "OC Mirror Command: {{ dest }}/bin/oc-mirror --cache-dir {{ oc_mirror_config.cache_dir }}  --v2 --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev --authfile {{ oc_mirror_config.authfile }}"
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v2"'
 
 - name: "OC-MIRROR V2 Mirroring Openshift Images for OCP Version [ {{ desired_ocp_version }} ]"
   ansible.builtin.command: |
-    {{ dest }}/bin/oc-mirror --v2 --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
+    {{ dest }}/bin/oc-mirror --cache-dir {{ oc_mirror_config.cache_dir }}  --v2 --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev --authfile {{ oc_mirror_config.authfile }}
   register: oc_mirror_rc
-  when: 'oc_mirror_version is defined and oc_mirror_version == "v2"'
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v2"'
 
 - name: "OC-MIRROR V1 Mirroring Openshift Images for OCP Version [ {{ desired_ocp_version }} ]"
   ansible.builtin.command: |
     {{ dest }}/bin/oc-mirror --config /tmp/image-config.yaml file://{{ dest }}/openshift-release-dev
   register: oc_mirror_rc
-  when: 'oc_mirror_version is defined and oc_mirror_version == "v1"'
+  when: 'oc_mirror_config.api_version is defined and oc_mirror_config.api_version == "v1"'
 
 - name: Debug oc-mirror output
   ansible.builtin.debug:
     var: oc_mirror_rc
-      
+
 # - name: Mirror Openshift 4 Content Locally
 #   shell: |
 #     {{ dest }}/oc adm release mirror --insecure=true \
@@ -162,13 +173,19 @@
     path: "{{ dest }}/containers"
     state: directory
 
-- name: Download NGINX and Registry Images into Package
-  ansible.builtin.get_url:
-    url: "{{ item }}"
-    dest: "{{ dest }}/containers/"
+- name: Download Container images
+  containers.podman.podman_save:
+    image: "{{ item }}"
+    dest: "{{ dest }}/containers/{{ item.split(':')[0].split('/')[-1] }}.tar"
+  loop: "{{ openshift_content_mirror_container_images }}"
+  when: container_images_download | default(false) | bool
+
+- name: Ensure correct file permissions are set for the downloaded image
+  ansible.builtin.file:
+    path: "{{ dest }}/containers/{{ item.split(':')[0].split('/')[-1] }}.tar"
     mode: '0660'
-  register: containers
-  loop: "{{ container_files }}"
+  loop: "{{ openshift_content_mirror_container_images }}"
+  when: container_images_download | default(false) | bool
 
 - name: "Download mirror-registry Binary"
   ansible.builtin.get_url:

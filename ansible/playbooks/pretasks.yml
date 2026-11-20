@@ -31,7 +31,7 @@
 - ansible.builtin.fail:
     msg: "Pretasks | Pull secret [{{ pull_secret_path }}] does not exists. Please enter a valid pull secret file."
   when: result_pull_secret.stat.exists == false
-  
+
 - name: "Pretasks | Checking ocp_version"
   ansible.builtin.debug:
     msg: "Pretasks | Desired OpenShift version: {{ desired_ocp_version }}"
@@ -41,10 +41,10 @@
 - name: "Pretasks | Version Check Variable"
   debug:
     var: version_check
-    
-- ansible.builtin.fail: 
+
+- ansible.builtin.fail:
     msg: "Pretasks | The desired ocp version [{{ desired_ocp_version }}] is not valid. Valid Example: 4.10.1"
-  when: 
+  when:
     - stable_version == false and version_check.skip_reason is defined and version_check.skip_reason == "Conditional result was False"
 
 - name: Pretasks | Checking OpenShift 4 version
@@ -67,13 +67,13 @@
     msg: " 0 ==== {{ stable_version }} === {{ desired_ocp_version }}"
 
 - name: Pretasks | Getting version for Stable OpenShift 4
-  ansible.builtin.shell: curl -s -L http://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ desired_ocp_version }} | grep 'href=\"openshift-client-linux-4' | cut -d '=' -f 2 | tr -d '"' | sed "s|>||g" | sed "s|openshift-client-linux-||g" | sed "s|.tar.gz||g"
+  ansible.builtin.shell: curl -s -L {{ ocp_client_download_url }}/{{ desired_ocp_version }} | grep 'href=\"openshift-client-linux-4' | cut -d '=' -f 2 | tr -d '"' | sed "s|>||g" | sed "s|openshift-client-linux-||g" | sed "s|.tar.gz||g"
   register: stable_v4_version
   when: 'stable_version == true'
 
-- ansible.builtin.fail: 
+- ansible.builtin.fail:
     msg: "Pretasks | The desired ocp version [{{ desired_ocp_version }}] does not exits"
-  when: 
+  when:
     - stable_version == false and v4_result.skip_reason is defined and v4_result.skip_reason == "Conditional result was False"
     - stable_version == true and stable_result.skip_reason is defined and stable_result.skip_reason == "Conditional result was False"
 
